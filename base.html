@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calendar</title>
+
+  <script defer src="script.js"></script> 
+  <!--Asynchronous generate for 'old' browsers-->
+  <script async src="script.js"></script>
+  <!--Asynchronous generate for 'modern' browsers-->
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+  <div class="container">
+    <h1>Calendar</h1>
+    <div class="calendar">
+      <div id="calendar-header"></div>
+
+      <div id="calender-month">
+      <!--Div Block for monthly view-->
+        <table class="weekdaystatic">
+          <tr id="weekdays">
+            <td headers "mon">Montag</td>
+            <td headers "din">Dienstag</td>
+            <td headers "mit">Mittwoch</td>
+            <td headers "don">Donnerstag</td>
+            <td headers "fri">Freitag</td>
+            <td headers "sat">Samstag</td>
+            <td headers "son">Sonntag</td>
+            <!--Days in Week static-->
+         </tr>
+        </table>
+      </div>
+
+
+      <div id="calender-week">
+      <!--Div Block for weekly view-->
+        <table class="weekdaystatic">
+          <tr id="weekdays">
+            <td headers "mon">Montag</td>
+            <td headers "din">Dienstag</td>
+            <td headers "mit">Mittwoch</td>
+            <td headers "don">Donnerstag</td>
+            <td headers "fri">Freitag</td>
+            <td headers "sat">Samstag</td>
+            <td headers "son">Sonntag</td>
+            <!--Days in Week static-->
+         </tr>
+        </table>
+      </div>
+
+      <div id="calender-week">
+        <!--Div Block for dayly view-->
+          <table class="weekdaystatic">
+            <tr id="weekdays">
+              <td headers "day"><!--Function to show selected day--></td>
+              <!--Days in Week static-->
+           </tr>
+          </table>
+      </div>
+
+
+        <!--Reservation to make on every day-->
+    </div>
+
+    <div>
+    <!--Buttons to go back and forth considering current state of view-->
+      <button onclick="goback()"><</button>
+      <button onclick="gofront()">></button>
+    </div>
+
+    <div>
+      <form class="form-inline">
+        <label class="labelselectmonth" for="month"></label>
+        <select class="selectmonth" name="month" id="month" onchange="jump()">
+            <option value=0>Jan</option>
+            <option value=1>Feb</option>
+            <option value=2>Mar</option>
+            <option value=3>Apr</option>
+            <option value=4>May</option>
+            <option value=5>Jun</option>
+            <option value=6>Jul</option>
+            <option value=7>Aug</option>
+            <option value=8>Sep</option>
+            <option value=9>Oct</option>
+            <option value=10>Nov</option>
+            <option value=11>Dec</option>
+        </select>
+
+        <label for="selectyear"></label>
+        <select name="selectyear" id="year" onchange="jump()" onload="selectOptionCreateYear()">
+        </select>
+
+        <label class="labelselectday"></label>
+        <select id="dayselect" name="dayselect" onchange="jump()">
+          <option> <!--Function to choose current day and go forth and back--></option>
+        </select> 
+      </form>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
