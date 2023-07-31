@@ -21,15 +21,31 @@ const rendermonth = month () {
 
 
 function selectOptionCreateYear() {
+  const selectElement = document.getElementById('YearDateSelect');
+  const currentYear = new Date().getFullYear();
 
-    select = document.getElementById('year');
-    select.add(new Option(10))
-    /*var year = new Date().getFullYear();
-    line = "";
-    for (var i = -20; i < 21 ; i++) {   
-      opt = document.createElement('option');
-      opt.value = i+year;
-      opt.innerHTML = i+year;
-      select.appendChild(line);
-    }*/
+  // Clear existing options
+  selectElement.innerHTML = '';
+
+  // Adding options for the past 50 years
+  for (let i = 50; i >= 1; i--) {
+    const yearOption = document.createElement('option');
+    yearOption.value = currentYear - i;
+    yearOption.textContent = currentYear - i;
+    selectElement.appendChild(yearOption);
+  }
+
+  // Adding options for current year and the next 50 years
+  for (let i = 0; i <= 50; i++) {
+    const yearOption = document.createElement('option');
+    yearOption.value = currentYear + i;
+    yearOption.textContent = currentYear + i;
+    selectElement.appendChild(yearOption);
+  }
+
+  // Set the index of the current year as selected
+  selectElement.selectedIndex = 50;
 }
+
+// Call the function to create the select element initially
+selectOptionCreateYear();
