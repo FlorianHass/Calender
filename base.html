@@ -71,31 +71,24 @@
     </div>
 
     <div>
+      <!-- Month for form-->
       <form class="form-inline" onsubmit="jumpdate()">
+
         <label class="labelselectmonth" for="month"></label>
-        <select name="month" id="Month" onfocus='this.size=12;' onblur='this.size=1;' onchange='this.size=1; this.blur()'>
-            <option value=0>January</option>
-            <option value=1>February</option>
-            <option value=2>March</option>
-            <option value=3>April</option>
-            <option value=4>May</option>
-            <option value=5>June</option>
-            <option value=6>July</option>
-            <option value=7>August</option>
-            <option value=8>September</option>
-            <option value=9>Octocober</option>
-            <option value=10>November</option>
-            <option value=11>December</option>
+        <select name="Month" id="MonthDateSelect" >
         </select>
 
+        <!-- Years for form-->
         <label for="selectyear"></label>
-        <select id="YearDateSelect" name="selectyear" onfocus='this.size=20;' onblur='this.size=1;' onchange='this.size=1; this.blur(); selectOptionCreateYear()'>
+        <select id="YearDateSelect" name="selectyear" >
         </select>
 
         <label class="labelselectday"></label>
-        <select id="dayselect" name="dayselect" onchange="jump()">
+        <select id="DayDateSelect" name="dayselect">
           <option> <!--Function to choose current day and go forth and back--></option>
         </select> 
+
+        <button type='submit'>Submit</button>
       </form>
 
     </div>
