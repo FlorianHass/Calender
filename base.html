@@ -14,65 +14,19 @@
 <body>
   <div class="container">
     <h1>Calendar</h1>
-    <div class="calendar">
-      <div id="calendar-header"></div>
 
-      <div id="calender-month">
-      <!--Div Block for monthly view-->
-        <table class="weekdaystatic">
-          <tr id="weekdays">
-            <td headers "mon">Montag</td>
-            <td headers "din">Dienstag</td>
-            <td headers "mit">Mittwoch</td>
-            <td headers "don">Donnerstag</td>
-            <td headers "fri">Freitag</td>
-            <td headers "sat">Samstag</td>
-            <td headers "son">Sonntag</td>
-            <!--Days in Week static-->
-         </tr>
-        </table>
-      </div>
+    <div id="calendartable"></div>
+    <!--Calender will be here-->
 
+    <div id="changeone">
 
-      <div id="calender-week">
-      <!--Div Block for weekly view-->
-        <table class="weekdaystatic">
-          <tr id="weekdays">
-            <td headers "mon">Montag</td>
-            <td headers "din">Dienstag</td>
-            <td headers "mit">Mittwoch</td>
-            <td headers "don">Donnerstag</td>
-            <td headers "fri">Freitag</td>
-            <td headers "sat">Samstag</td>
-            <td headers "son">Sonntag</td>
-            <!--Days in Week static-->
-         </tr>
-        </table>
-      </div>
-
-      <div id="calender-week">
-        <!--Div Block for dayly view-->
-          <table class="weekdaystatic">
-            <tr id="weekdays">
-              <td headers "day"><!--Function to show selected day--></td>
-              <!--Days in Week static-->
-           </tr>
-          </table>
-      </div>
-
-
-        <!--Reservation to make on every day-->
-    </div>
-
-    <div>
-    <!--Buttons to go back and forth considering current state of view-->
-      <button onclick="goback()"></button>
-      <button onclick="gofront()">></button>
+      <button onclick="gobackinview()"><</button>
+      <button onclick="goforthinview()">></button>
     </div>
 
     <div>
       <!-- Month for form-->
-      <form class="form-inline" onsubmit="jumpdate()">
+      <form id="dateForm">
 
         <label class="labelselectmonth" for="month"></label>
         <select name="Month" id="MonthDateSelect" >
@@ -91,6 +45,13 @@
         <button type='submit'>Submit</button>
       </form>
 
+    </div>
+
+    <div>
+      <!-- Select view for table-->
+      <button id="viewmonth" onclick="setmonthview()" >Month</button>
+      <button id="viewweek" onclick="setweekview()">Week</button>
+      <button id="viewday" onclick="setdayview()">Day</button>
     </div>
 
   </div>
