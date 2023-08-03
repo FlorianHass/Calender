@@ -1,4 +1,3 @@
-
 const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const monthsvalue =["01","02","03","04","05","06","07","08","09","10","11","12"];
@@ -72,13 +71,6 @@ function reloadDaysFromMonth(selectedMonth) {
     daySelectElement.appendChild(option);
   }
 }
-
-/* Save the selected day locally for session*/
-selectday.addEventListener('change', function() {
-  sessionStorage.setItem('selectedday', selectday.value);
-});
-
-
 
 function selectOptionCreateYear() {
   const selectElement = document.getElementById('YearDateSelect');
@@ -352,14 +344,13 @@ function goforthinview(){
     case "week":
       const currentdate = new Date(sessionStorage.getItem("selectedyear")+"-"+sessionStorage.getItem("selectedmonth")+"-"+sessionStorage.getItem("selectedday"));
       const nextdate = new Date(currentdate.valueOf(currentdate) + 7*Lengthofday);
-
       sessionStorage.setItem("selectedyear",nextdate.getFullYear());
-      sessionStorage.setItem("selectedmonth",monthsvalue[nextdate.getMonth()])
-      if (parseInt(nextdate.getDate) < 10) {
-        sessionStorage.setItem("selectday","0"+nextdate.getDate());
+      sessionStorage.setItem("selectedmonth",monthsvalue[nextdate.getMonth()]);
+      if (nextdate.getDate() < 10) {
+        sessionStorage.setItem("selectedday","0"+(nextdate.getDate()).toString());
       }
       else{
-      sessionStorage.setItem("selectday",nextdate.getDate());
+        sessionStorage.setItem("selectedday",nextdate.getDate().toString());
       }
       break;
 
@@ -370,10 +361,10 @@ function goforthinview(){
       sessionStorage.setItem("selectedyear",nextdate2.getFullYear());
       sessionStorage.setItem("selectedmonth",monthsvalue[nextdate2.getMonth()])
       if (parseInt(nextdate2.getDate) < 10) {
-        sessionStorage.setItem("selectday","0"+nextdate2.getDate());
+        sessionStorage.setItem("selectedday","0"+nextdate2.getDate());
       }
       else{
-      sessionStorage.setItem("selectday",nextdate2.getDate());
+      sessionStorage.setItem("selectedday",nextdate2.getDate());
       }
       break;
 
@@ -384,4 +375,67 @@ function goforthinview(){
   selectOptionCreateMonth(selectmonth,months,monthsvalue);
   selectOptionCreateYear();
   loadview();
+}
+
+function gobackinview(){
+  switch (sessionStorage.getItem("view")) {
+    case "month":
+      
+      const countmonth = parseInt(sessionStorage.getItem("selectedmonth"));
+      if (countmonth === 0) {
+        countyear = parseInt(sessionStorage.getItem("selectedyear"));
+        sessionStorage.setItem("selectedyear", (countyear-1).toString() );
+        sessionStorage.setItem("selectedmonth",monthsvalue[11]);
+      }
+      else if (countmonth < 11){
+        sessionStorage.setItem("selectedmonth","0"+(countmonth-1).toString());
+      }
+      else {
+        sessionStorage.setItem("selectedmonth",(countmonth-1).toString());
+      }
+      break;
+  
+    case "week":
+      const currentdate = new Date(sessionStorage.getItem("selectedyear")+"-"+sessionStorage.getItem("selectedmonth")+"-"+sessionStorage.getItem("selectedday"));
+      const nextdate = new Date(currentdate.valueOf(currentdate) - 7*Lengthofday);
+      sessionStorage.setItem("selectedyear",nextdate.getFullYear());
+      sessionStorage.setItem("selectedmonth",monthsvalue[nextdate.getMonth()]);
+      if (nextdate.getDate() < 10) {
+        sessionStorage.setItem("selectedday","0"+(nextdate.getDate()).toString());
+      }
+      else{
+        sessionStorage.setItem("selectedday",nextdate.getDate().toString());
+      }
+      break;
+
+    case "day":
+      const currentdate2 = new Date(sessionStorage.getItem("selectedyear")+"-"+sessionStorage.getItem("selectedmonth")+"-"+sessionStorage.getItem("selectedday"));
+      const nextdate2 = new Date(currentdate2.valueOf(currentdate2) - Lengthofday);
+
+      sessionStorage.setItem("selectedyear",nextdate2.getFullYear());
+      sessionStorage.setItem("selectedmonth",monthsvalue[nextdate2.getMonth()])
+      if (parseInt(nextdate2.getDate) < 10) {
+        sessionStorage.setItem("selectedday","0"+nextdate2.getDate());
+      }
+      else{
+      sessionStorage.setItem("selectedday",nextdate2.getDate());
+      }
+      break;
+
+    default:
+
+      break;
+  }
+  selectOptionCreateMonth(selectmonth,months,monthsvalue);
+  selectOptionCreateYear();
+  loadview();
+}
+
+
+function openreservation(){
+  createreservation();
+}
+
+function createreservation(){
+  id und username und datum, id nur für jeden Tag also für jeden tag mehrere ID
 }
