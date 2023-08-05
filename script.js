@@ -6,45 +6,43 @@ const selectyear = document.getElementById('YearDateSelect');
 const selectmonth = document.getElementById('MonthDateSelect');
 const selectday = document.getElementById('DayDateSelect');
 const Lengthofday = 8.64e+7;
-var request = new XMLHttpRequest();
 
 /*Get User E-mail*/
-window.onload = function () {
+window.onload = function() {
   if (localStorage.getItem("registration") === null) {
-    const userInput = "";
-    condition = false;
-    while (condition === false) {
-      userInput = prompt("Please enter Username: ");
-        if (userInput === null) {
-          alert("You canceled the prompt");
-        }
-        else{
-          const url= "https://dhbw.radicalsimplicity.com/calendar/${userInput}/events";
-          fetch(url)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              return response.json();
-            })
-            .then(data => {
-              if (data === null) {
-                localStorage.setItem("registration",userInput);
-                condition = true;
-              } else {
-                alert("Username already given try again");
-              }
-            })
-            .catch(error => {
-              console.error('Error:', error);
-            });
-        }
-      }
-  }
-  else{
+    registerUser();
+  } else {
     console.log(localStorage.getItem("registration"));
-    }
+  }
+};
+
+function registerUser() {
+  const userInput = prompt("Please enter Username: ");
+  if (userInput === null) {
+    alert("You canceled the prompt");
+  } else {
+    const url = `http://dhbw.radicalsimplicity.com/calendar/${userInput}/events`;
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data === null) {
+          localStorage.setItem("registration", userInput);
+        } else {
+          alert("Username already given, try again");
+          registerUser(); // Recursive call to prompt for username again
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
 }
+
 
 
 
