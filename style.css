@@ -10,3 +10,7 @@ ul.calender-weekdays{
     background-color: #333333;
 
 }
+
+#reservationsystem{
+    display: none;
+}       

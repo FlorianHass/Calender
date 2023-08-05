@@ -6,6 +6,46 @@ const selectyear = document.getElementById('YearDateSelect');
 const selectmonth = document.getElementById('MonthDateSelect');
 const selectday = document.getElementById('DayDateSelect');
 const Lengthofday = 8.64e+7;
+var request = new XMLHttpRequest();
+
+/*Get User E-mail*/
+window.onload = function () {
+  if (localStorage.getItem("registration") === null) {
+    const userInput = "";
+    condition = false;
+    while (condition === false) {
+      userInput = prompt("Please enter Username: ");
+        if (userInput === null) {
+          alert("You canceled the prompt");
+        }
+        else{
+          const url= "https://dhbw.radicalsimplicity.com/calendar/${userInput}/events";
+          fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data === null) {
+                localStorage.setItem("registration",userInput);
+                condition = true;
+              } else {
+                alert("Username already given try again");
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        }
+      }
+  }
+  else{
+    console.log(localStorage.getItem("registration"));
+    }
+}
+
 
 
 function selectOptionCreateMonth(selectElement, stringArray, datearray) {
@@ -169,6 +209,7 @@ function loadview(){
     default:
       const calendarTable4 = createCalendarMonth(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"));
       calendarDiv.appendChild(calendarTable4);
+      sessionStorage.setItem("view","month");
       break;
   }
 }
@@ -204,7 +245,7 @@ function createCalendarMonth(year, month) {
   table.appendChild(headerRow);
 
   // Create the table rows for the days in the month
-  const daysInMonth = getDaysInMonth(year, month);
+  const daysInMonth2 = getDaysInMonth(year, month);
   let currentDate = 1;
 
   for (let row = 0; row < 6; row++) {
@@ -216,7 +257,7 @@ function createCalendarMonth(year, month) {
           if (row === 0 && col < firstDayOfWeek) {
               // Empty cell before the first day of the month
               tableCell.textContent = '';
-          } else if (currentDate > daysInMonth) {
+          } else if (currentDate > daysInMonth2) {
               // Empty cell after the last day of the month
               tableCell.textContent = '';
           } else {
@@ -431,11 +472,40 @@ function gobackinview(){
   loadview();
 }
 
-
-function openreservation(){
-  createreservation();
+/*Max amount of years for reservation form*/
+function getMaxDate() {
+  const today = new Date();
+  const maxDate = new Date(today.getFullYear() + 50, today.getMonth(), today.getDate());
+  return maxDate.toISOString().split('T')[0];
 }
 
-function createreservation(){
-  id und username und datum, id nur für jeden Tag also für jeden tag mehrere ID
+document.addEventListener('DOMContentLoaded', function () {
+  const eventDateInput = document.getElementById("ReservationDate");
+  eventDateInput.setAttribute('max', getMaxDate());
+});
+
+function openreservation(){
+  document.getElementById("reservationsystem").style.display = 'block';
+}
+
+function cancelreservation(){
+  document.getElementById("ReservationDate").value = "";
+  document.getElementById("ReservationDescription").value = "";
+  document.getElementById("ReservationEventType").value = "Alarm";
+  document.getElementById("ReservationImage").value = "";
+  document.getElementById("reservationsystem").style.display = 'none';
+}
+
+function submitreservation(){
+  /*Check how many reservations date has*/
+  /* id und username und datum, id nur für jeden Tag also für jeden tag mehrere ID*/ 
+  
+}
+
+function fetchData() {
+  const url = 'http://dhbw.radicalsimplicity.com/calendar/7078869/events'; // Example API endpoint for multiple JSON objects
+  fetch(url)
+      .then(response => response.json())
+      .then(data => processMultipleJSON(data))
+      .catch(error => console.error('Error:', error));
 }

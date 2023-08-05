@@ -56,7 +56,32 @@
 
   </div>
   <div id="reservationmaking">
-    <button id="reservationopen" onclick="openreservation()" ></button>
+    <button id="reservationopen" onclick="openreservation()" >Reservation</button>
+  </div>
+
+  <div id="reservationsystem">
+    <form action="#" method="post">
+      <label for="eventDate">Event Date:</label>
+      <input type="date" id="ReservationDate" name="eventDate" required><br><br>
+
+      <label for="description">Description:</label>
+      <input type="text" id="ReservationDescription" name="description" required><br><br>
+
+      <label for="description">Image-URL:</label>
+      <input type="text" id="ReservationImage" name="description" required><br><br>
+
+      <label for="eventType">Event Type:</label>
+      <select id="ReservationEventType" name="eventType" required>
+          <option value="Alert">Alert</option>
+          <option value="Reservation">Reservation</option>
+          <option value="Alarm">Alarm</option>
+          <option value="Birthday">Birthday</option>
+          <option value="Event">Event</option>
+      </select><br><br>
+
+      <button onclick="cancelreservation()">Cancel</button>
+      <input type="submit" value="Submit" onpress=>
+  </form>
   </div>
 </body>
 </html>
