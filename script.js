@@ -8,20 +8,21 @@ const selectday = document.getElementById('DayDateSelect');
 const Lengthofday = 8.64e+7;
 
 /*Get User E-mail*/
-window.onload = function() {
-  if (localStorage.getItem("registration") === null) {
-    registerUser();
-  } else {
-    console.log(localStorage.getItem("registration"));
-  }
-};
+if (localStorage.getItem("registration") === null) {
+  registerUser();
+}
 
+/* Register User by checking if User-Account already exists, create new one if doesnt */
 function registerUser() {
-  const userInput = prompt("Please enter Username: ");
+  const userInput = prompt("Please enter max 8 Digits Username: ");
   if (userInput === null) {
-    alert("You canceled the prompt");
-  } else {
-    const url = `http://dhbw.radicalsimplicity.com/calendar/${userInput}/events`;
+    alert("You canceled the prompt");}
+  else if (userInput.length > 8){
+    alert("Username too long");
+    registerUser();
+  }
+  else {
+    const url = `http://dhbw.radicalsimplicity.com/calendar/88${userInput}/events`;
     fetch(url)
       .then(response => {
         if (!response.ok) {
@@ -30,7 +31,7 @@ function registerUser() {
         return response.json();
       })
       .then(data => {
-        if (data === null) {
+        if (Array.isArray(data) && data.length === 0) { /* Check if the json array is empty */
           localStorage.setItem("registration", userInput);
         } else {
           alert("Username already given, try again");
@@ -42,9 +43,6 @@ function registerUser() {
       });
   }
 }
-
-
-
 
 function selectOptionCreateMonth(selectElement, stringArray, datearray) {
   // Clear existing options, if any
@@ -470,6 +468,28 @@ function gobackinview(){
   loadview();
 }
 
+/* Checkbox for allday */
+function regulatetimespan(){
+  const bool = document.getElementById("ReservationAllday").checked;
+
+  if(bool){
+    document.getElementById("timespan").style.display="none";
+  }
+  else{
+    document.getElementById("timespan").style.display="block";
+  }
+}
+
+/* Show timespan div for a reservation submit */
+function showtimespan(){
+  document.getElementById("timespan").style.display="block";
+}
+
+/* Hide timespan div for a reservation submit */
+function hidetimespan(){
+  document.getElementById("timespan").style.display="none";
+}
+
 /*Max amount of years for reservation form*/
 function getMaxDate() {
   const today = new Date();
@@ -489,21 +509,75 @@ function openreservation(){
 function cancelreservation(){
   document.getElementById("ReservationDate").value = "";
   document.getElementById("ReservationDescription").value = "";
-  document.getElementById("ReservationEventType").value = "Alarm";
   document.getElementById("ReservationImage").value = "";
+  document.getElementById("ReservationLocation").value = "";
   document.getElementById("reservationsystem").style.display = 'none';
+  document.getElementById("ReservationTitle").value = "";
+}
+
+function checktimespan(){
+  const startTimeInput = document.getElementById('ReservationBegin');
+  const endTimeInput = document.getElementById('ReservationEnd');
+
+      // Get the values from the input fields (time format is "HH:mm")
+      const startTimeValue = startTimeInput.value;
+      const endTimeValue = endTimeInput.value;
+
+      // Create Date objects with a common date (today) and the time values
+      const startDate = new Date(`2000-01-01T${startTimeValue}`);
+      const endDate = new Date(`2000-01-01T${endTimeValue}`);
+
+      // Compare the Date objects to check if the first time is before the second
+      if (startDate < endDate) {
+        showsubmit();
+      } else if (startDate > endDate) {
+        hidesubmit();
+      }
+      else{
+        showsubmit();
+      }
+}
+
+
+/* Show reservation submit div */
+function showsubmit(){
+  document.getElementById("reservationsubmit").style.display = "block";
+  document.getElementById("timespanincorrect").innerHTML = "";
+}
+
+/* Hide reservation submit div */
+function hidesubmit(){
+  document.getElementById("reservationsubmit").style.display = "none";
+  document.getElementById("timespanincorrect").innerHTML = "Your timespan is incorrect";
 }
 
 function submitreservation(){
   /*Check how many reservations date has*/
   /* id und username und datum, id nur für jeden Tag also für jeden tag mehrere ID*/ 
+  event.preventDefault(); // Prevent the default form submission behavior
   
+  title = document.getElementById("ReservationTitle").value;
+  location = document.getElementById("ReservationLocation").value;
+  day = document.getElementById("ReservationDate").value;
+  timebegin = document.getElementById("ReservationBegin").value;
+  timeend = document.getElementById("ReservationEnd").value;
+  allday = document.getElementById("ReservationAllday").checked;
+  description = document.getElementById("ReservationDescription").value;
+
+  const accountname = localStorage.getItem("registration");
+  var request = new XMLHttpRequest();
+  request.open("POST","http://dhbw.radicalsimplicity.com/88${accountname}/events");
+    request.onreadystatechange = () => {  
+    if (request.readyState == XMLHttpRequest.DONE) {
+        const status = request.status;
+        if (status == 0 || status == 200) {
+            tablechange(JSON.parse(request.responseText));
+            /* Use json object from text file */
+        }
+    }
+}
+request.send()
+
 }
 
-function fetchData() {
-  const url = 'http://dhbw.radicalsimplicity.com/calendar/7078869/events'; // Example API endpoint for multiple JSON objects
-  fetch(url)
-      .then(response => response.json())
-      .then(data => processMultipleJSON(data))
-      .catch(error => console.error('Error:', error));
-}
+

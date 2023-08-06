@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calendar</title>
 
   <script defer src="script.js"></script> 
@@ -61,26 +62,36 @@
 
   <div id="reservationsystem">
     <form action="#" method="post">
-      <label for="eventDate">Event Date:</label>
+      <label for="ReservationDate">Event Date:</label>
       <input type="date" id="ReservationDate" name="eventDate" required><br><br>
 
-      <label for="description">Description:</label>
-      <input type="text" id="ReservationDescription" name="description" required><br><br>
+      <label for="ReservationAllday">Allday:</label>
+      <input type="checkbox" name="allday" id="ReservationAllday" onchange="regulatetimespan()">
 
-      <label for="description">Image-URL:</label>
-      <input type="text" id="ReservationImage" name="description" required><br><br>
+      <div id="timespan">
+        <label for="ReservationBegin">Begin:</label>
+        <input type="time" id="ReservationBegin" name="eventBegin"onchange="checktimespan()" required>
 
-      <label for="eventType">Event Type:</label>
-      <select id="ReservationEventType" name="eventType" required>
-          <option value="Alert">Alert</option>
-          <option value="Reservation">Reservation</option>
-          <option value="Alarm">Alarm</option>
-          <option value="Birthday">Birthday</option>
-          <option value="Event">Event</option>
-      </select><br><br>
+        <label for="ReservationEnd">End:</label>
+        <input type="time" id="ReservationEnd" name="eventEnd" onchange="checktimespan()" required><p id="timespanincorrect"></p><br><br>
+      </div>
+
+      <label for="ReservationTitle">Title:</label>
+      <input type="text" id="ReservationTitle" name="title" placeholder="Title" maxlength="50" required><br><br>
+
+      <label for="ReservationDescription">Description:</label>
+      <input type="text" id="ReservationDescription" name="description" placeholder="Description" maxlength="2000" required><br><br>
+
+      <label for="ReservationLocation">Location:</label>
+      <input type="text" id="ReservationLocation" name="location" placeholder="DHBW" maxlength="50" required><br><br>
+
+      <label for="ReservationImage">Image-URL:</label>
+      <input type="url" id="ReservationImage" name="image" placeholder="Post link here" required><br><br>
 
       <button onclick="cancelreservation()">Cancel</button>
-      <input type="submit" value="Submit" onpress=>
+      <div id="reservationsubmit">
+        <input type="submit" value="Submit" onsubmit="submitreservation()">
+      </div>
   </form>
   </div>
 </body>
