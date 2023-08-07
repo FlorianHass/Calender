@@ -61,7 +61,7 @@
   </div>
 
   <div id="reservationsystem">
-    <form action="#" method="post">
+    <form id="reservationform">
       <label for="ReservationDate">Event Date:</label>
       <input type="date" id="ReservationDate" name="eventDate" required><br><br>
 
@@ -70,10 +70,10 @@
 
       <div id="timespan">
         <label for="ReservationBegin">Begin:</label>
-        <input type="time" id="ReservationBegin" name="eventBegin"onchange="checktimespan()" required>
+        <input type="time" id="ReservationBegin" name="eventBegin"onchange="checktimespan()">
 
         <label for="ReservationEnd">End:</label>
-        <input type="time" id="ReservationEnd" name="eventEnd" onchange="checktimespan()" required><p id="timespanincorrect"></p><br><br>
+        <input type="time" id="ReservationEnd" name="eventEnd" onchange="checktimespan()"><p id="timespanincorrect"></p><br><br>
       </div>
 
       <label for="ReservationTitle">Title:</label>
@@ -86,7 +86,7 @@
       <input type="text" id="ReservationLocation" name="location" placeholder="DHBW" maxlength="50" required><br><br>
 
       <label for="ReservationImage">Image-URL:</label>
-      <input type="url" id="ReservationImage" name="image" placeholder="Post link here" required><br><br>
+      <input type="url" id="ReservationImage" name="image" placeholder="Post link here"><br><br>
 
       <button onclick="cancelreservation()">Cancel</button>
       <div id="reservationsubmit">

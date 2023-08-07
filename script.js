@@ -7,6 +7,7 @@ const selectmonth = document.getElementById('MonthDateSelect');
 const selectday = document.getElementById('DayDateSelect');
 const Lengthofday = 8.64e+7;
 
+console.log(localStorage.getItem("registration"));
 /*Get User E-mail*/
 if (localStorage.getItem("registration") === null) {
   registerUser();
@@ -530,11 +531,17 @@ function checktimespan(){
       // Compare the Date objects to check if the first time is before the second
       if (startDate < endDate) {
         showsubmit();
+        document.getElementById("ReservationBegin").required = true;
+        document.getElementById("ReservationEnd").required = true;
       } else if (startDate > endDate) {
         hidesubmit();
+        document.getElementById("ReservationBegin").required = false;
+        document.getElementById("ReservationEnd").required = false;
       }
       else{
         showsubmit();
+        document.getElementById("ReservationBegin").required = true;
+        document.getElementById("ReservationEnd").required = true;
       }
 }
 
@@ -551,33 +558,42 @@ function hidesubmit(){
   document.getElementById("timespanincorrect").innerHTML = "Your timespan is incorrect";
 }
 
-function submitreservation(){
-  /*Check how many reservations date has*/
-  /* id und username und datum, id nur für jeden Tag also für jeden tag mehrere ID*/ 
-  event.preventDefault(); // Prevent the default form submission behavior
-  
-  title = document.getElementById("ReservationTitle").value;
-  location = document.getElementById("ReservationLocation").value;
-  day = document.getElementById("ReservationDate").value;
-  timebegin = document.getElementById("ReservationBegin").value;
-  timeend = document.getElementById("ReservationEnd").value;
-  allday = document.getElementById("ReservationAllday").checked;
-  description = document.getElementById("ReservationDescription").value;
-
-  const accountname = localStorage.getItem("registration");
-  var request = new XMLHttpRequest();
-  request.open("POST","http://dhbw.radicalsimplicity.com/88${accountname}/events");
-    request.onreadystatechange = () => {  
-    if (request.readyState == XMLHttpRequest.DONE) {
-        const status = request.status;
-        if (status == 0 || status == 200) {
-            tablechange(JSON.parse(request.responseText));
-            /* Use json object from text file */
-        }
+  function submitreservation(event){
+    /*Check how many reservations date has*/
+    /* id und username und datum, id nur für jeden Tag also für jeden tag mehrere ID*/ 
+    event.preventDefault(); // Prevent the default form submission behavior
+    
+    const title = document.getElementById("ReservationTitle").value;
+    const location = document.getElementById("ReservationLocation").value;
+    const day = document.getElementById("ReservationDate").value;
+    const allday = document.getElementById("ReservationAllday").checked;
+    const description = document.getElementById("ReservationDescription").value;
+    const image = document.getElementById("ReservationImage").value;
+    var parameter = "";
+    if (allday) {
+      parameter = '{"title": "' + title + '", "location": "' + location + '", "organizer": "inf22125@lehre.dhbw-stuttgart.de", "start": "' + day + 'T' + '00:01' + '", "end": "' + day + 'T' + '23:59' + '", "status": "Busy", "allday": '+ true +',"webpage": "nowebpage.com", "imagedata": ' + null + ',"extra": "' + description + '"}';
     }
-}
-request.send()
+    else{
+      const timebegin = document.getElementById("ReservationBegin").value;
+      const timeend = document.getElementById("ReservationEnd").value;
+      parameter = '{"title": "' + title + '", "location": "' + location + '", "organizer": "inf22125@lehre.dhbw-stuttgart.de", "start": "' + day + 'T' + timebegin + '", "end": "' + day + 'T' + timeend + '", "status": "Busy", "allday": '+ false +',"webpage": "nowebpage.com", "imagedata": ' + null + ',"extra": "' + description + '"}';
+    }
+    console.log(parameter);
+    const accountname = localStorage.getItem("registration");
+    var request = new XMLHttpRequest();
+    request.open("POST",`http://dhbw.radicalsimplicity.com/calendar/88${accountname}/events`);
+      request.onreadystatechange = () => {  
+      if (request.readyState == XMLHttpRequest.DONE) {
+          const status = request.status;
+          if (status == 200) {
+              tablechange(JSON.parse(request.responseText));
+              /* Use json object from text file */
+          }
+      }
+    }
+    request.send(parameter);
+  };
 
-}
-
-
+// Event listener to handle form submission
+const reservationform = document.getElementById('reservationform');
+reservationform.addEventListener('submit', submitreservation);
