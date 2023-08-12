@@ -1,5 +1,5 @@
 const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const monthsname = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const monthsvalue =["01","02","03","04","05","06","07","08","09","10","11","12"];
 
 const selectyear = document.getElementById('YearDateSelect');
@@ -65,7 +65,7 @@ function selectOptionCreateMonth(selectElement, stringArray, datearray) {
   }
 }
 
-selectOptionCreateMonth(selectmonth,months,monthsvalue);
+selectOptionCreateMonth(selectmonth,monthsname,monthsvalue);
 
 // Add an event listener to the Month select element to reload the Day options when the month is changed
 selectmonth.addEventListener('change', (event) => {
@@ -270,9 +270,59 @@ function createCalendarMonth(year, month) {
 
       table.appendChild(tableRow);
   }
-
+  /*createReservationMonth(year,month);*/
+  createReservationDivs(year,month,getallReservations());
   return table;
 }
+
+function createReservationDivs(year, month, jsonDataArray) {
+  const divContainer = document.createElement('calendarreservation');
+
+  // Create a new Date object with the given year and month (month is 0-indexed)
+  const firstDayOfMonth = new Date(year, month, 1);
+
+  // Get the first day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+  const firstDayOfWeek = firstDayOfMonth.getDay();
+
+  // Create an array to hold divs for each day in the calendar
+  const dayDivs = new Array(42); // 6 rows * 7 columns
+
+  for (let i = 0; i < dayDivs.length; i++) {
+    dayDivs[i] = document.createElement('div');
+    dayDivs[i].style.border = '1px solid black';
+    dayDivs[i].style.padding = '5px';
+  }
+
+  // Fill in the divs with reservation data from jsonDataArray
+  for (let i = 0; i < jsonDataArray.length; i++) {
+    const jsonData = jsonDataArray[i];
+    const date = new Date(jsonData.start);
+    if (date.getFullYear() === year && date.getMonth() === month) {
+      const dayOfMonth = date.getDate();
+      const index = firstDayOfWeek + dayOfMonth - 1;
+      const divContent = document.createElement('div');
+      divContent.textContent = jsonData.someProperty; // Change this to the appropriate property from your JSON
+
+      if (dayDivs[index].children.length === 0) {
+        // If there are no previous divs for this day, just add the new one
+        dayDivs[index].appendChild(divContent);
+      } else {
+        // If there are already divs for this day, stack the new div below the existing ones
+        dayDivs[index].appendChild(document.createElement('br'));
+        dayDivs[index].appendChild(divContent);
+      }
+    }
+  }
+
+  // Add the divs to the container
+  for (let i = 0; i < dayDivs.length; i++) {
+    divContainer.appendChild(dayDivs[i]);
+  }
+
+  return divContainer;
+}
+
+
 
 function createCalendarWeek(year, month, day) {
   // Create the calendar table
@@ -410,7 +460,7 @@ function goforthinview(){
 
       break;
   }
-  selectOptionCreateMonth(selectmonth,months,monthsvalue);
+  selectOptionCreateMonth(selectmonth,monthsname,monthsvalue);
   selectOptionCreateYear();
   loadview();
 }
@@ -464,7 +514,7 @@ function gobackinview(){
 
       break;
   }
-  selectOptionCreateMonth(selectmonth,months,monthsvalue);
+  selectOptionCreateMonth(selectmonth,monthsname,monthsvalue);
   selectOptionCreateYear();
   loadview();
 }
@@ -553,47 +603,133 @@ function showsubmit(){
 }
 
 /* Hide reservation submit div */
+
+function getparameterforcreate(){
+  if (document.getElementById("ReservationAllday").checked) {
+    return{
+      title : document.getElementById("ReservationTitle").value,
+      location : document.getElementById("ReservationLocation").value,
+      organizer : "inf22125@lehre.dhbw-stuttgart.de",
+      start : document.getElementById("ReservationDate").value + "T" + "00:00",
+      end : document.getElementById("ReservationDate").value + "T" + "23:59",
+      status : "Busy",
+      allday : true,
+      webpage : "nowebpage.com",
+      //imagedata:null;
+      categories : [],
+      extra : document.getElementById("ReservationDescription").value
+    }
+  }
+  else{
+    const timebegin = document.getElementById("ReservationBegin").value;
+    const timeend = document.getElementById("ReservationEnd").value;
+
+    return{
+      title : document.getElementById("ReservationTitle").value,
+      location : document.getElementById("ReservationLocation").value,
+      organizer : "inf22125@lehre.dhbw-stuttgart.de",
+      start : document.getElementById("ReservationDate").value + 'T' + timebegin,
+      end : document.getElementById("ReservationDate").value + 'T' + timeend,
+      status : "Busy",
+      allday : false,
+      webpage : "nowebpage.com",
+      //imagedata:null;
+      categories : [],
+      extra : document.getElementById("ReservationDescription").value
+    }
+  }
+}
+
 function hidesubmit(){
   document.getElementById("reservationsubmit").style.display = "none";
   document.getElementById("timespanincorrect").innerHTML = "Your timespan is incorrect";
 }
 
-  function submitreservation(event){
+  async function submitreservation(event){
     /*Check how many reservations date has*/
     /* id und username und datum, id nur für jeden Tag also für jeden tag mehrere ID*/ 
     event.preventDefault(); // Prevent the default form submission behavior
     
-    const title = document.getElementById("ReservationTitle").value;
-    const location = document.getElementById("ReservationLocation").value;
-    const day = document.getElementById("ReservationDate").value;
-    const allday = document.getElementById("ReservationAllday").checked;
-    const description = document.getElementById("ReservationDescription").value;
-    const image = document.getElementById("ReservationImage").value;
-    var parameter = "";
-    if (allday) {
-      parameter = '{"title": "' + title + '", "location": "' + location + '", "organizer": "inf22125@lehre.dhbw-stuttgart.de", "start": "' + day + 'T' + '00:01' + '", "end": "' + day + 'T' + '23:59' + '", "status": "Busy", "allday": '+ true +',"webpage": "nowebpage.com", "imagedata": ' + null + ',"extra": "' + description + '"}';
-    }
-    else{
-      const timebegin = document.getElementById("ReservationBegin").value;
-      const timeend = document.getElementById("ReservationEnd").value;
-      parameter = '{"title": "' + title + '", "location": "' + location + '", "organizer": "inf22125@lehre.dhbw-stuttgart.de", "start": "' + day + 'T' + timebegin + '", "end": "' + day + 'T' + timeend + '", "status": "Busy", "allday": '+ false +',"webpage": "nowebpage.com", "imagedata": ' + null + ',"extra": "' + description + '"}';
-    }
-    console.log(parameter);
-    const accountname = localStorage.getItem("registration");
-    var request = new XMLHttpRequest();
-    request.open("POST",`http://dhbw.radicalsimplicity.com/calendar/88${accountname}/events`);
-      request.onreadystatechange = () => {  
-      if (request.readyState == XMLHttpRequest.DONE) {
-          const status = request.status;
-          if (status == 200) {
-              tablechange(JSON.parse(request.responseText));
-              /* Use json object from text file */
-          }
-      }
-    }
-    request.send(parameter);
-  };
+    parameter = getparameterforcreate();
+    cancelreservation();
+    accountname = localStorage.getItem("registration");
 
+    try{
+      const request = await fetch(`http://dhbw.radicalsimplicity.com/calendar/88${accountname}/events`,{
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parameter)
+      });
+      console.log(request);
+      if (request.status !== 200) {
+        throw new Error(request.status);
+      }
+    }catch (error){
+      console.log(error);
+    }
+      
+}
 // Event listener to handle form submission
-const reservationform = document.getElementById('reservationform');
-reservationform.addEventListener('submit', submitreservation);
+document.getElementById("reservationform").addEventListener('submit', submitreservation);
+
+/* Async function to get array of json as events*/
+async function getallReservations() {
+  
+  const accountname = localStorage.getItem("registration");
+
+  try {
+      const response = await fetch(`http://dhbw.radicalsimplicity.com/calendar/88${accountname}/events`, {
+          method: "GET", // Use GET method for retrieving data
+
+          headers: {
+              "Content-Type": "application/json",
+          },
+          // Note: GET requests typically don't have a request body
+      });
+
+      if (!response.ok) {
+          throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data
+  } catch (error) {
+      console.error(error);
+  }
+}
+
+/* Called to delete all Reservations based on the events getter */
+async function deleteallHelper(data){
+
+  const accountname = localStorage.getItem("registration");
+  alert("All reservations deleted");
+
+  for (let i = 0; i < data.length; i++){
+    const event = data[i];
+    const event_id = event.id;
+    try {
+      const response = await fetch(`http://dhbw.radicalsimplicity.com/calendar/88${accountname}/events/${event_id}`, {
+          method: "DELETE", // Use DELETE method for retrieving data
+
+          headers: {
+              "Content-Type": "application/json",
+          },
+      });
+
+      if (!response.ok) {
+          throw new Error(`Request failed with status: ${response.status}`);
+      }
+  } catch (error) {
+      console.error(error);
+  }
+  }
+}
+
+/* Called when DeleteAll Button is called */
+async function deleteAllReservations(){
+  const reservations = await getallReservations(); // Await the promise to get the data
+  deleteallHelper(reservations);
+}
