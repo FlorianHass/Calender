@@ -1,29 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Event Calendar</title>
-  <link rel="stylesheet" href="tryout.css">
+  <title>Map Example</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </head>
 <body>
-  <h1>Event Calendar</h1>
-  <table id="calendar">
-    <thead>
-      <tr>
-        <th>Sun</th>
-        <th>Mon</th>
-        <th>Tue</th>
-        <th>Wed</th>
-        <th>Thu</th>
-        <th>Fri</th>
-        <th>Sat</th>
-      </tr>
-    </thead>
-    <tbody id="calendar-body">
-      <!-- Calendar days will be populated here -->
-    </tbody>
-  </table>
-  <script src="tryout.js"></script>
+  <div id="map" style="width: 600px; height: 450px;"></div>
+  <script>
+    const address = "Worms";
+
+    // Initialize the map
+    const map = L.map('map').setView([0, 0], 8);
+
+    // Add an OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Use a geocoding service to convert the address to coordinates
+    fetch(`https://nominatim.openstreetmap.org/search?q=${address}&format=json`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.length > 0) {
+          const location = data[0];
+          const marker = L.marker([location.lat, location.lon]).addTo(map);
+          marker.bindPopup(`<b>${address}</b>`).openPopup();
+          map.setView([location.lat, location.lon], 12);
+        } else {
+          console.error("Address not found.");
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+  </script>
 </body>
 </html>

@@ -284,7 +284,7 @@ async function createCalendarMonth(year, month) {
                   const eventItem = document.createElement("div");
                   eventItem.className = "event-div-month";
                   eventItem.textContent = event.title;
-                  eventItem.addEventListener("click", () => openreservation(event.id));
+                  eventItem.addEventListener("click", () => open_current_reservation(event.id));
 
                   /* Append eventContainer to tableCell */
                   eventContainer.appendChild(eventItem);
@@ -305,8 +305,6 @@ async function createCalendarMonth(year, month) {
 
   return table;
 }
-
-
 
 async function createCalendarWeek(year, month, day) {
   // Create the calendar table
@@ -353,7 +351,7 @@ async function createCalendarWeek(year, month, day) {
         const eventItem = document.createElement("div");
         eventItem.className = "event-div-week";
         eventItem.textContent = event.title;
-        eventItem.addEventListener("click", () => openreservation(event.id));
+        eventItem.addEventListener("click", () => open_current_reservation(event.id));
 
         /* Append eventContainer to tableCell */
         eventContainer.appendChild(eventItem);
@@ -411,7 +409,7 @@ async function createCalendarDay(year,month,day) {
                   const eventItem = document.createElement("div");
                   eventItem.className = "event-div-day";
                   eventItem.textContent = event.title;
-                  eventItem.addEventListener("click", () => openreservation(event.id));
+                  eventItem.addEventListener("click", () => open_current_reservation(event.id));
 
                   /* Append eventContainer to tableCell */
                   eventContainer.appendChild(eventItem);
@@ -598,7 +596,6 @@ function openreservation(){
 function cancelreservation(){
   document.getElementById("ReservationDate").value = "";
   document.getElementById("ReservationDescription").value = "";
-  document.getElementById("ReservationImage").value = "";
   document.getElementById("ReservationLocation").value = "";
   document.getElementById("reservationsystem").style.display = 'none';
   document.getElementById("ReservationTitle").value = "";
@@ -657,9 +654,11 @@ function showsubmit(){
 
 /* Hide reservation submit div */
 
-function getparameterforcreate(){
+async function getparameterforcreate(){
+
   if (document.getElementById("ReservationAllday").checked) {
     return{
+
       title : document.getElementById("ReservationTitle").value,
       location : document.getElementById("ReservationLocation").value,
       organizer : "inf22125@lehre.dhbw-stuttgart.de",
@@ -668,7 +667,7 @@ function getparameterforcreate(){
       status : "Busy",
       allday : true,
       webpage : "nowebpage.com",
-      //imagedata: document.getElementById("ReservationImage").value,
+      imagedata: null,
       categories : [],
       extra : document.getElementById("ReservationDescription").value
     }
@@ -686,12 +685,53 @@ function getparameterforcreate(){
       status : "Busy",
       allday : false,
       webpage : "nowebpage.com",
-      //imagedata: document.getElementById("ReservationImage").value,
+      imagedata: null,
       categories : [],
       extra : document.getElementById("ReservationDescription").value
     }
   }
 }
+
+/* Convert image into url for backend using canvas */
+function convertimage(number) {
+  return new Promise((resolve, reject) => {
+      let input = document.getElementById("ReservationImageNew");
+      if (number === 1) {
+        input = document.getElementById("ReservationImage");
+      }
+      if (input.files && input.files[0]) {
+          const file = input.files[0];
+          
+          if (file.type.match('image.*')) {
+              const reader = new FileReader();
+              
+              reader.onload = function(e) {
+                  const img = new Image();
+                  img.src = e.target.result;
+                  
+                  img.onload = function() {
+                      const canvas = document.createElement("canvas");
+                      const ctx = canvas.getContext("2d");
+                      
+                      canvas.width = img.width;
+                      canvas.height = img.height;
+                      
+                      ctx.drawImage(img, 0, 0);
+                      
+                      const base64Image = canvas.toDataURL("image/jpeg"); // You can change the format if needed
+                      resolve(base64Image);
+                  };
+              };
+              
+              reader.readAsDataURL(file);
+          } else {
+              reject("Selected file is not an image.");
+          }
+      }
+  });
+}
+
+
 
 function hidesubmit(){
   document.getElementById("reservationsubmit").style.display = "none";
@@ -703,7 +743,7 @@ function hidesubmit(){
     /* id und username und datum, id nur für jeden Tag also für jeden tag mehrere ID*/ 
     event.preventDefault(); // Prevent the default form submission behavior
     
-    parameter = getparameterforcreate();
+    parameter = await getparameterforcreate();
     cancelreservation();
     accountname = localStorage.getItem("registration");
 
@@ -727,6 +767,40 @@ function hidesubmit(){
 }
 // Event listener to handle form submission
 document.getElementById("reservationform").addEventListener('submit', submitreservation);
+
+async function AddImageToEvent(){
+
+  const image = await AddImageToEventHelper();
+  const accountname = localStorage.getItem("registration");
+  const id = sessionStorage.getItem("current_event_id");
+
+    try{
+      const request = await fetch(`http://dhbw.radicalsimplicity.com/calendar/88${accountname}/images/${id}`,{
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(image)
+      });
+      console.log(request);
+      if (request.status !== 200) {
+        throw new Error(request.status);
+      }
+    }catch (error){
+      console.log(error);
+    }
+
+}
+
+async function AddImageToEventHelper(){
+
+  image = await convertimage(0);
+
+  return{
+    imagedata : image
+  }
+}
 
 /* Async function to get array of json as events*/
 async function getallReservations() {
@@ -788,7 +862,33 @@ async function deleteAllReservations(){
   loadview();
 }
 
-async function openreservation(id){
+/* Delete event by sessionstorage id, changed when clicking on event */
+async function deletereservation(){
+  const accountname = localStorage.getItem("registration");
+  alert("reservation deleted");
+
+  const id = sessionStorage.getItem("current_event_id");
+    try {
+      const response = await fetch(`http://dhbw.radicalsimplicity.com/calendar/88${accountname}/events/${id}`, {
+          method: "DELETE", // Use DELETE method for retrieving data
+
+          headers: {
+              "Content-Type": "application/json",
+          },
+      });
+
+      if (!response.ok) {
+          throw new Error(`Request failed with status: ${response.status}`);
+      }
+      loadview();
+      closereservationdiv();
+  } catch (error) {
+      console.error(error);
+  }
+  }
+
+/* Open interface that shows details for current opened event */
+async function open_current_reservation(id){
 
   data = await getreservationbyId(id);
   
@@ -798,8 +898,10 @@ async function openreservation(id){
   document.getElementById("openreservation-description").innerHTML = data.extra;
 
   document.getElementById("openreservation").style.display = "block";
+  sessionStorage.setItem("current_event_id",id);
 }
 
+/* GET current reservation with request */
 async function getreservationbyId(id){
 
   const accountname = localStorage.getItem("registration");
@@ -825,6 +927,7 @@ async function getreservationbyId(id){
   }
 }
 
+/* Close the interface that shows details for current opened reservation */
 function closereservationdiv(){
   document.getElementById("openreservation").style.display = "none";
 
@@ -832,4 +935,56 @@ function closereservationdiv(){
   document.getElementById("openreservation-title").innerHTML = "";
   document.getElementById("openreservation-location").innerHTML = "";
   document.getElementById("openreservation-description").innerHTML = "";
+  closemap();
 }
+
+let map = null; // Initialize the map variable
+
+/* Opens Map by Leaflet based on Location entered with event */
+async function openmap() {
+  if (!map) {
+    // If the map is not already open, create it
+    document.getElementById("map").style.display = "block";
+    const data = await getreservationbyId(sessionStorage.getItem("current_event_id"));
+    const address = data.location;
+
+    // Initialize the map
+    map = L.map('map').setView([0, 0], 8);
+
+    // Add an OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Use a geocoding service to convert the address to coordinates
+    fetch(`https://nominatim.openstreetmap.org/search?q=${address}&format=json`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.length > 0) {
+          const location = data[0];
+          const marker = L.marker([location.lat, location.lon]).addTo(map);
+          marker.bindPopup(`<b>${address}</b>`).openPopup();
+          map.setView([location.lat, location.lon], 12);
+        } else {
+          console.error("Address not found.");
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+  } else {
+    // If the map is already open, just display the map container
+    document.getElementById("map").style.display = "block";
+  }
+}
+
+/* Close opened map */
+function closemap() {
+  if (map) {
+    document.getElementById("map").style.display = "none";
+    map.remove(); // Destroy the map instance
+    map = null; // Reset the map variable
+  }
+}
+

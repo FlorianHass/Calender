@@ -19,6 +19,10 @@ ul.calender-weekdays{
   display: none;
 }
 
+#map{
+  display: none;
+}
+
 /* Styling for reservation divs */
 .reservation-container-month {
   display: flex;

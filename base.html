@@ -9,7 +9,13 @@
   <script async src="script.js"></script>
   <!--Asynchronous generate for 'modern' browsers-->
 
+  <script defer src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+  <script async src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
   <link rel="stylesheet" type="text/css" href="style.css">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
 </head>
 <body>
@@ -88,10 +94,6 @@
       <label for="ReservationLocation">Location:</label>
       <input type="text" id="ReservationLocation" name="location" placeholder="DHBW" maxlength="50" required><br><br>
 
-      <label for="ReservationImage">Image-URL:</label>
-      <input type="file" id="ReservationImage" accept="image/*" onchange="validateImage()">
-      <p id="errorTextImage" style="color: red;"></p><br><br>
-
       <button onclick="cancelreservation()">Cancel</button>
       <div id="reservationsubmit">
         <input type="submit" value="Submit" onsubmit="submitreservation()">
@@ -107,9 +109,17 @@
     <p id="openreservation-day"></p>
     <p id="openreservation-title"></p>
     <p id="openreservation-location"></p>
+    <button onclick="openmap()">~</button>
+    <button onclick="closemap()">*</button>
     <p id="openreservation-description"></p>
+    <input type="file" id="ReservationImageNew" accept="image/*" onchange="validateImage()">
+    <button onclick="AddImageToEvent()">Enter image</button>
     <button onclick="closereservationdiv()">X</button>
+    <button onclick="deletereservation()">Delete event</button>
   </div>
+
+  <!--Map for location search-->
+  <div id="map" style="width: 600px; height: 450px;"></div>
 
 </body>
 </html>
