@@ -89,7 +89,8 @@
       <input type="text" id="ReservationLocation" name="location" placeholder="DHBW" maxlength="50" required><br><br>
 
       <label for="ReservationImage">Image-URL:</label>
-      <input type="url" id="ReservationImage" name="image" placeholder="Post link here"><br><br>
+      <input type="file" id="ReservationImage" accept="image/*" onchange="validateImage()">
+      <p id="errorTextImage" style="color: red;"></p><br><br>
 
       <button onclick="cancelreservation()">Cancel</button>
       <div id="reservationsubmit">
@@ -100,6 +101,14 @@
 
   <div id="divfordeleteallbutton">
     <button id="deleteallevents" onclick="deleteAllReservations()">Delete all Reservations</button>
+  </div>
+
+  <div id="openreservation">
+    <p id="openreservation-day"></p>
+    <p id="openreservation-title"></p>
+    <p id="openreservation-location"></p>
+    <p id="openreservation-description"></p>
+    <button onclick="closereservationdiv()">X</button>
   </div>
 
 </body>

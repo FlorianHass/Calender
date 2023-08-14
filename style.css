@@ -1,5 +1,3 @@
-div.container {
-}
 
 ul.calender-weekdays{
 
@@ -13,4 +11,74 @@ ul.calender-weekdays{
 
 #reservationsystem{
     display: none;
-}       
+}
+
+#openreservation{
+  border: #160a0a;
+  border-style: dotted;
+  display: none;
+}
+
+/* Styling for reservation divs */
+.reservation-container-month {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 5px;
+  margin: 5px 0;
+}
+
+.reservation-container-week{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 5px;
+  margin: 5px 0;
+}
+
+.reservation-container-day{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 5px;
+  margin: 5px 0;
+}
+
+.event-div-month {
+  border: 1px solid black;
+  padding: 5px;
+  margin: 2px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.event-div-week {
+  border: 1px solid black;
+  padding: 5px;
+  margin: 2px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.event-div-day {
+  border: 1px solid black;
+  padding: 5px;
+  margin: 2px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.event-div-month:hover {
+  background-color: #d0d0d0;
+}
+
+.event-div-week:hover {
+  background-color: #d0d0d0;
+}
+
+.event-div-day:hover {
+  background-color: #d0d0d0;
+}

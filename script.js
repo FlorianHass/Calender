@@ -184,27 +184,27 @@ function handleSubmit(event) {
 const dateForm = document.getElementById('dateForm');
 dateForm.addEventListener('submit', handleSubmit);
 
-function loadview(){
+async function loadview(){
   const calendarDiv = document.getElementById('calendartable');
   calendarDiv.innerHTML = "";
   switch (sessionStorage.getItem('view')) {
     case "month": /*Month*/
-      const calendarTable = createCalendarMonth(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"));
+      const calendarTable = await createCalendarMonth(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"));
       calendarDiv.appendChild(calendarTable);
       break;
     
     case "week": /*Week*/
-      const calendarTable2 = createCalendarWeek(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"),sessionStorage.getItem("selectedday"));
+      const calendarTable2 = await createCalendarWeek(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"),sessionStorage.getItem("selectedday"));
       calendarDiv.appendChild(calendarTable2);
       break;
 
     case "day": /*Day*/
-    const calendarTable3 = createCalendarDay(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"),sessionStorage.getItem("selectedday"));
+    const calendarTable3 = await createCalendarDay(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"),sessionStorage.getItem("selectedday"));
     calendarDiv.appendChild(calendarTable3);
       break;
     
     default:
-      const calendarTable4 = createCalendarMonth(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"));
+      const calendarTable4 = await createCalendarMonth(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"));
       calendarDiv.appendChild(calendarTable4);
       sessionStorage.setItem("view","month");
       break;
@@ -216,12 +216,14 @@ function getDaysInMonth(year, month) {
   return new Date(year, month, 0).getDate();
 }
 
-function createCalendarMonth(year, month) {
+async function createCalendarMonth(year, month) {
   // Create a new Date object with the given year and month (month is 0-indexed)
   const firstDayOfMonth = new Date(year+"-"+month+"-"+"01");
 
   // Get the first day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
   const firstDayOfWeek = firstDayOfMonth.getDay();
+
+  const reservations = await getallReservations(); // Await the promise to get the data
 
   // Create the calendar table
   const table = document.createElement('calendertable');
@@ -260,9 +262,39 @@ function createCalendarMonth(year, month) {
           } else {
               // Display the current date
               tableCell.textContent = currentDate;
+              let extra = "";
+              if (currentDate < 10) {
+                extra = "0"; /* Add '0' if date is single number */
+              }
+              let currentDatefull =  extra + currentDate;
+              let fulldate = year + "-" + month + "-" + currentDatefull;
+              /* fulldate variable simply is like the start/end attribute so YYYY-MM-DD */
               currentDate++;
-          }
+              let count = 0;
+              reservations.every(event => {
+                if (count === 6) {
+                    return false; /* Limit amount of shown events per day to 6 */
+                }
+                else if (event.start.slice(0,event.start.indexOf('T')) === fulldate) {
 
+                  /* Seems dumb to create an eventContainer for each EventItem, however is necessary to list below each other */
+                  const eventContainer = document.createElement("div");
+                  eventContainer.className = "reservation-container-month";
+
+                  const eventItem = document.createElement("div");
+                  eventItem.className = "event-div-month";
+                  eventItem.textContent = event.title;
+                  eventItem.addEventListener("click", () => openreservation(event.id));
+
+                  /* Append eventContainer to tableCell */
+                  eventContainer.appendChild(eventItem);
+                  tableCell.appendChild(eventContainer);
+                  count++;
+                  return true
+                }
+                return true;
+              });
+          }
           tableCell.style.border = '1px solid black';
           tableCell.style.padding = '5px';
           tableRow.appendChild(tableCell);
@@ -270,64 +302,18 @@ function createCalendarMonth(year, month) {
 
       table.appendChild(tableRow);
   }
-  /*createReservationMonth(year,month);*/
-  createReservationDivs(year,month,getallReservations());
+
   return table;
 }
 
-function createReservationDivs(year, month, jsonDataArray) {
-  const divContainer = document.createElement('calendarreservation');
-
-  // Create a new Date object with the given year and month (month is 0-indexed)
-  const firstDayOfMonth = new Date(year, month, 1);
-
-  // Get the first day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-  const firstDayOfWeek = firstDayOfMonth.getDay();
-
-  // Create an array to hold divs for each day in the calendar
-  const dayDivs = new Array(42); // 6 rows * 7 columns
-
-  for (let i = 0; i < dayDivs.length; i++) {
-    dayDivs[i] = document.createElement('div');
-    dayDivs[i].style.border = '1px solid black';
-    dayDivs[i].style.padding = '5px';
-  }
-
-  // Fill in the divs with reservation data from jsonDataArray
-  for (let i = 0; i < jsonDataArray.length; i++) {
-    const jsonData = jsonDataArray[i];
-    const date = new Date(jsonData.start);
-    if (date.getFullYear() === year && date.getMonth() === month) {
-      const dayOfMonth = date.getDate();
-      const index = firstDayOfWeek + dayOfMonth - 1;
-      const divContent = document.createElement('div');
-      divContent.textContent = jsonData.someProperty; // Change this to the appropriate property from your JSON
-
-      if (dayDivs[index].children.length === 0) {
-        // If there are no previous divs for this day, just add the new one
-        dayDivs[index].appendChild(divContent);
-      } else {
-        // If there are already divs for this day, stack the new div below the existing ones
-        dayDivs[index].appendChild(document.createElement('br'));
-        dayDivs[index].appendChild(divContent);
-      }
-    }
-  }
-
-  // Add the divs to the container
-  for (let i = 0; i < dayDivs.length; i++) {
-    divContainer.appendChild(dayDivs[i]);
-  }
-
-  return divContainer;
-}
 
 
-
-function createCalendarWeek(year, month, day) {
+async function createCalendarWeek(year, month, day) {
   // Create the calendar table
   const table = document.createElement('calendertable');
   table.style.borderCollapse = 'collapse';
+
+  const reservations = await getallReservations(); // Await the promise to get the data
 
   // Create the table header with day names
   const headerRow = document.createElement('tr');
@@ -353,6 +339,30 @@ function createCalendarWeek(year, month, day) {
     const tableCell = document.createElement('td');
     const dateValue = new Date(firstdateofweek.valueOf(firstdateofweek) + col * Lengthofday).getDate();
     tableCell.textContent = dateValue;
+    let count = 0;
+    reservations.every(event => {
+      if (count === 6) {
+          return false; /* Limit amount of shown events per day to 6 */
+      }
+      else if (event.start.slice(0,event.start.indexOf('T')) === new Date(firstdateofweek.valueOf(firstdateofweek) + col * Lengthofday).toISOString().split('T')[0] ) {
+
+        /* Seems dumb to create an eventContainer for each EventItem, however is necessary to list below each other */
+        const eventContainer = document.createElement("div");
+        eventContainer.className = "reservation-container-week";
+
+        const eventItem = document.createElement("div");
+        eventItem.className = "event-div-week";
+        eventItem.textContent = event.title;
+        eventItem.addEventListener("click", () => openreservation(event.id));
+
+        /* Append eventContainer to tableCell */
+        eventContainer.appendChild(eventItem);
+        tableCell.appendChild(eventContainer);
+        count++;
+        return true
+      }
+      return true;
+    });
 
     tableCell.style.border = '1px solid black';
     tableCell.style.padding = '5px';
@@ -363,10 +373,13 @@ function createCalendarWeek(year, month, day) {
   return table;
 }
 
-function createCalendarDay(year,month,day) {
+async function createCalendarDay(year,month,day) {
   // Create the calendar table
   const table = document.createElement('calendertable');
   table.style.borderCollapse = 'collapse';
+
+  const reservations = await getallReservations(); // Await the promise to get the data
+
   const currentdate = new Date(year+"-"+month+"-"+day);
   const headerRow = document.createElement('tr');
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -383,6 +396,31 @@ function createCalendarDay(year,month,day) {
 
     const tableCell = document.createElement('td');
     tableCell.textContent = currentdate.getDate();
+
+    let count = 0;
+              reservations.every(event => {
+                if (count === 6) {
+                    return false; /* Limit amount of shown events per day to 6 */
+                }
+                else if (event.start.slice(0,event.start.indexOf('T')) === currentdate.toISOString().split('T')[0]) {
+
+                  /* Seems dumb to create an eventContainer for each EventItem, however is necessary to list below each other */
+                  const eventContainer = document.createElement("div");
+                  eventContainer.className = "reservation-container-day";
+
+                  const eventItem = document.createElement("div");
+                  eventItem.className = "event-div-day";
+                  eventItem.textContent = event.title;
+                  eventItem.addEventListener("click", () => openreservation(event.id));
+
+                  /* Append eventContainer to tableCell */
+                  eventContainer.appendChild(eventItem);
+                  tableCell.appendChild(eventContainer);
+                  count++;
+                  return true
+                }
+                return true;
+              });
 
     tableCell.style.border = '1px solid black';
     tableCell.style.padding = '5px';
@@ -595,6 +633,21 @@ function checktimespan(){
       }
 }
 
+/* Validate Image Input for Reservation */
+function validateImage() {
+    var fileInput = document.getElementById('ReservationImage');
+    var errorText = document.getElementById('errorTextImage');
+    
+    var file = fileInput.files[0];
+    if (file) {
+      if (file.type.startsWith('image/')) {
+        errorText.textContent = '';
+      } else {
+        errorText.textContent = 'Please upload a valid image file.';
+        hidesubmit();
+      }
+    }
+  }
 
 /* Show reservation submit div */
 function showsubmit(){
@@ -615,7 +668,7 @@ function getparameterforcreate(){
       status : "Busy",
       allday : true,
       webpage : "nowebpage.com",
-      //imagedata:null;
+      //imagedata: document.getElementById("ReservationImage").value,
       categories : [],
       extra : document.getElementById("ReservationDescription").value
     }
@@ -633,7 +686,7 @@ function getparameterforcreate(){
       status : "Busy",
       allday : false,
       webpage : "nowebpage.com",
-      //imagedata:null;
+      //imagedata: document.getElementById("ReservationImage").value,
       categories : [],
       extra : document.getElementById("ReservationDescription").value
     }
@@ -732,4 +785,51 @@ async function deleteallHelper(data){
 async function deleteAllReservations(){
   const reservations = await getallReservations(); // Await the promise to get the data
   deleteallHelper(reservations);
+  loadview();
+}
+
+async function openreservation(id){
+
+  data = await getreservationbyId(id);
+  
+  document.getElementById("openreservation-day").innerHTML = data.start.split('T')[0] + "  " + data.start.substring(data.start.indexOf('T') + 1) + "--" + data.end.substring(data.end.indexOf('T') + 1);
+  document.getElementById("openreservation-title").innerHTML = data.title;
+  document.getElementById("openreservation-location").innerHTML = data.location;
+  document.getElementById("openreservation-description").innerHTML = data.extra;
+
+  document.getElementById("openreservation").style.display = "block";
+}
+
+async function getreservationbyId(id){
+
+  const accountname = localStorage.getItem("registration");
+
+  try {
+      const response = await fetch(`http://dhbw.radicalsimplicity.com/calendar/88${accountname}/events/${id}`, {
+          method: "GET", // Use GET method for retrieving data
+
+          headers: {
+              "Content-Type": "application/json",
+          },
+          // Note: GET requests typically don't have a request body
+      });
+
+      if (!response.ok) {
+          throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data
+  } catch (error) {
+      console.error(error);
+  }
+}
+
+function closereservationdiv(){
+  document.getElementById("openreservation").style.display = "none";
+
+  document.getElementById("openreservation-day").innerHTML = "";
+  document.getElementById("openreservation-title").innerHTML = "";
+  document.getElementById("openreservation-location").innerHTML = "";
+  document.getElementById("openreservation-description").innerHTML = "";
 }

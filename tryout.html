@@ -1,79 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Calendar Table</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Calendar</title>
+  <link rel="stylesheet" href="tryout.css">
 </head>
 <body>
-    <div id="calendar"></div>
-
-    <script>
-        function createCalendarTable(year, month) {
-            // Create a new Date object with the given year and month (month is 0-indexed)
-            const firstDayOfMonth = new Date(year, month, 1);
-            const lastDayOfMonth = new Date(year, month + 1, 0);
-
-            // Get the first day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-            const firstDayOfWeek = firstDayOfMonth.getDay();
-
-            // Create the calendar table
-            const table = document.createElement('table');
-            table.style.borderCollapse = 'collapse';
-
-            // Create the table header with day names
-            const headerRow = document.createElement('tr');
-            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-            for (let i = 0; i < 7; i++) {
-                const headerCell = document.createElement('th');
-                headerCell.textContent = daysOfWeek[i];
-                headerCell.style.border = '1px solid black';
-                headerCell.style.padding = '5px';
-                headerRow.appendChild(headerCell);
-            }
-
-            table.appendChild(headerRow);
-
-            // Create the table rows for the days in the month
-            const daysInMonth = lastDayOfMonth.getDate();
-            let currentDate = 1;
-
-            for (let row = 0; row < 6; row++) {
-                const tableRow = document.createElement('tr');
-
-                for (let col = 0; col < 7; col++) {
-                    const tableCell = document.createElement('td');
-
-                    if (row === 0 && col < firstDayOfWeek) {
-                        // Empty cell before the first day of the month
-                        tableCell.textContent = '';
-                    } else if (currentDate > daysInMonth) {
-                        // Empty cell after the last day of the month
-                        tableCell.textContent = '';
-                    } else {
-                        // Display the current date
-                        tableCell.textContent = currentDate;
-                        currentDate++;
-                    }
-
-                    tableCell.style.border = '1px solid black';
-                    tableCell.style.padding = '5px';
-                    tableRow.appendChild(tableCell);
-                }
-
-                table.appendChild(tableRow);
-            }
-
-            return table;
-        }
-
-        // Example usage:
-        const calendarDiv = document.getElementById('calendar');
-        const date = new Date(); // Current date
-        const year = date.getFullYear();
-        const month = date.getMonth();
-
-        const calendarTable = createCalendarTable(year, month);
-        calendarDiv.appendChild(calendarTable);
-    </script>
+  <h1>Event Calendar</h1>
+  <table id="calendar">
+    <thead>
+      <tr>
+        <th>Sun</th>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+        <th>Sat</th>
+      </tr>
+    </thead>
+    <tbody id="calendar-body">
+      <!-- Calendar days will be populated here -->
+    </tbody>
+  </table>
+  <script src="tryout.js"></script>
 </body>
 </html>
