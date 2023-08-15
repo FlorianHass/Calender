@@ -185,28 +185,39 @@ const dateForm = document.getElementById('dateForm');
 dateForm.addEventListener('submit', handleSubmit);
 
 async function loadview(){
-  const calendarDiv = document.getElementById('calendartable');
-  calendarDiv.innerHTML = "";
+  const calendarDivMonth = document.getElementById('calendartablemonth');
+  const calendarDivWeek = document.getElementById('calendartableweek');
+  const calendarDivDay = document.getElementById('calendartableday');
+  calendarDivMonth.innerHTML = "";
+  calendarDivWeek.innerHTML = "";
+  calendarDivDay.innerHTML = "";
+  calendarDivMonth.style.display = "none";
+  calendarDivWeek.style.display = "none";
+  calendarDivDay.style.display = "none";
   switch (sessionStorage.getItem('view')) {
     case "month": /*Month*/
       const calendarTable = await createCalendarMonth(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"));
-      calendarDiv.appendChild(calendarTable);
+      calendarDivMonth.appendChild(calendarTable);
+      calendarDivMonth.style.display = "block";
       break;
     
     case "week": /*Week*/
       const calendarTable2 = await createCalendarWeek(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"),sessionStorage.getItem("selectedday"));
-      calendarDiv.appendChild(calendarTable2);
+      calendarDivWeek.appendChild(calendarTable2);
+      calendarDivWeek.style.display = "block";
       break;
 
     case "day": /*Day*/
     const calendarTable3 = await createCalendarDay(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"),sessionStorage.getItem("selectedday"));
-    calendarDiv.appendChild(calendarTable3);
+    calendarDivDay.appendChild(calendarTable3);
+    calendarDivDay.style.display = "block";
       break;
     
     default:
       const calendarTable4 = await createCalendarMonth(sessionStorage.getItem("selectedyear"), sessionStorage.getItem("selectedmonth"));
-      calendarDiv.appendChild(calendarTable4);
+      calendarDivMonth.appendChild(calendarTable4);
       sessionStorage.setItem("view","month");
+      calendarDivMonth.style.display = "block";
       break;
   }
 }
@@ -226,7 +237,7 @@ async function createCalendarMonth(year, month) {
   const reservations = await getallReservations(); // Await the promise to get the data
 
   // Create the calendar table
-  const table = document.createElement('calendertable');
+  const table = document.createElement('calendartable');
   table.style.borderCollapse = 'collapse';
 
   // Create the table header with day names
@@ -236,8 +247,9 @@ async function createCalendarMonth(year, month) {
   for (let i = 0; i < 7; i++) {
       const headerCell = document.createElement('th');
       headerCell.textContent = daysOfWeek[i];
-      headerCell.style.border = '1px solid black';
-      headerCell.style.padding = '5px';
+      if (i === 0) {
+        headerCell.style.color = "#9c1a1a";
+      }
       headerRow.appendChild(headerCell);
   }
 
@@ -262,6 +274,9 @@ async function createCalendarMonth(year, month) {
           } else {
               // Display the current date
               tableCell.textContent = currentDate;
+              if (col === 0) {
+                tableCell.style.color = "#9c1a1a";
+              }
               let extra = "";
               if (currentDate < 10) {
                 extra = "0"; /* Add '0' if date is single number */
@@ -280,9 +295,16 @@ async function createCalendarMonth(year, month) {
                   /* Seems dumb to create an eventContainer for each EventItem, however is necessary to list below each other */
                   const eventContainer = document.createElement("div");
                   eventContainer.className = "reservation-container-month";
-
                   const eventItem = document.createElement("div");
                   eventItem.className = "event-div-month";
+                  if (event.imageurl !== null) {
+                    const image = event.imageurl
+                    eventItem.style.backgroundColor = "#f3f3f3";
+                    eventItem.style.backgroundImage = "url("+image+")";
+                    eventItem.style.backgroundSize = "cover"; // Resize the background image to cover the entire div
+                    eventItem.style.backgroundPosition = "center"; // Center the background image within the div
+                    eventItem.style.backgroundRepeat = "no-repeat"; // Prevent the background image from repeating
+                  }
                   eventItem.textContent = event.title;
                   eventItem.addEventListener("click", () => open_current_reservation(event.id));
 
@@ -295,8 +317,6 @@ async function createCalendarMonth(year, month) {
                 return true;
               });
           }
-          tableCell.style.border = '1px solid black';
-          tableCell.style.padding = '5px';
           tableRow.appendChild(tableCell);
       }
 
@@ -308,8 +328,7 @@ async function createCalendarMonth(year, month) {
 
 async function createCalendarWeek(year, month, day) {
   // Create the calendar table
-  const table = document.createElement('calendertable');
-  table.style.borderCollapse = 'collapse';
+  const table = document.createElement('calendartable');
 
   const reservations = await getallReservations(); // Await the promise to get the data
 
@@ -320,8 +339,9 @@ async function createCalendarWeek(year, month, day) {
   for (let i = 0; i < 7; i++) {
     const headerCell = document.createElement('th');
     headerCell.textContent = daysOfWeek[i];
-    headerCell.style.border = '1px solid black';
-    headerCell.style.padding = '5px';
+    if (i === 0) {
+      headerCell.style.color = "#9c1a1a";
+    }
     headerRow.appendChild(headerCell);
   }
   table.appendChild(headerRow);
@@ -338,6 +358,9 @@ async function createCalendarWeek(year, month, day) {
     const dateValue = new Date(firstdateofweek.valueOf(firstdateofweek) + col * Lengthofday).getDate();
     tableCell.textContent = dateValue;
     let count = 0;
+    if (col === 0) {
+      tableCell.style.color = "#9c1a1a";
+    }
     reservations.every(event => {
       if (count === 6) {
           return false; /* Limit amount of shown events per day to 6 */
@@ -351,6 +374,14 @@ async function createCalendarWeek(year, month, day) {
         const eventItem = document.createElement("div");
         eventItem.className = "event-div-week";
         eventItem.textContent = event.title;
+        if (event.imageurl !== null) {
+          const image = event.imageurl
+          eventItem.style.backgroundColor = "#f3f3f3";
+          eventItem.style.backgroundImage = "url("+image+")";
+          eventItem.style.backgroundSize = "cover"; // Resize the background image to cover the entire div
+          eventItem.style.backgroundPosition = "center"; // Center the background image within the div
+          eventItem.style.backgroundRepeat = "no-repeat"; // Prevent the background image from repeating
+        }
         eventItem.addEventListener("click", () => open_current_reservation(event.id));
 
         /* Append eventContainer to tableCell */
@@ -362,8 +393,6 @@ async function createCalendarWeek(year, month, day) {
       return true;
     });
 
-    tableCell.style.border = '1px solid black';
-    tableCell.style.padding = '5px';
     tableRow.appendChild(tableCell);
   }
 
@@ -373,8 +402,7 @@ async function createCalendarWeek(year, month, day) {
 
 async function createCalendarDay(year,month,day) {
   // Create the calendar table
-  const table = document.createElement('calendertable');
-  table.style.borderCollapse = 'collapse';
+  const table = document.createElement('calendartable');
 
   const reservations = await getallReservations(); // Await the promise to get the data
 
@@ -384,8 +412,6 @@ async function createCalendarDay(year,month,day) {
 
   const headerCell = document.createElement('th');
   headerCell.textContent = daysOfWeek[currentdate.getDay()];
-  headerCell.style.border = '1px solid black';
-  headerCell.style.padding = '5px';
   headerRow.appendChild(headerCell);
   table.appendChild(headerRow);
 
@@ -409,6 +435,14 @@ async function createCalendarDay(year,month,day) {
                   const eventItem = document.createElement("div");
                   eventItem.className = "event-div-day";
                   eventItem.textContent = event.title;
+                  if (event.imageurl !== null) {
+                    const image = event.imageurl
+                    eventItem.style.backgroundColor = "#f3f3f3";
+                    eventItem.style.backgroundImage = "url("+image+")";
+                    eventItem.style.backgroundSize = "cover"; // Resize the background image to cover the entire div
+                    eventItem.style.backgroundPosition = "center"; // Center the background image within the div
+                    eventItem.style.backgroundRepeat = "no-repeat"; // Prevent the background image from repeating
+                  }
                   eventItem.addEventListener("click", () => open_current_reservation(event.id));
 
                   /* Append eventContainer to tableCell */
@@ -420,8 +454,6 @@ async function createCalendarDay(year,month,day) {
                 return true;
               });
 
-    tableCell.style.border = '1px solid black';
-    tableCell.style.padding = '5px';
     tableRow.appendChild(tableCell);
 
   table.appendChild(tableRow);
@@ -632,15 +664,12 @@ function checktimespan(){
 
 /* Validate Image Input for Reservation */
 function validateImage() {
-    var fileInput = document.getElementById('ReservationImage');
-    var errorText = document.getElementById('errorTextImage');
-    
+    var fileInput = document.getElementById('ReservationImageNew');
+  
     var file = fileInput.files[0];
     if (file) {
       if (file.type.startsWith('image/')) {
-        errorText.textContent = '';
       } else {
-        errorText.textContent = 'Please upload a valid image file.';
         hidesubmit();
       }
     }
@@ -784,6 +813,7 @@ async function AddImageToEvent(){
         body: JSON.stringify(image)
       });
       console.log(request);
+      loadview();
       if (request.status !== 200) {
         throw new Error(request.status);
       }
@@ -802,6 +832,29 @@ async function AddImageToEventHelper(){
   }
 }
 
+async function DeleteImageFromEvent(){
+
+  const accountname = localStorage.getItem("registration");
+  const id = sessionStorage.getItem("current_event_id");
+
+    try{
+      const request = await fetch(`http://dhbw.radicalsimplicity.com/calendar/88${accountname}/images/${id}`,{
+        method: "DELETE",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(request);
+      loadview();
+      if (request.status !== 200) {
+        throw new Error(request.status);
+      }
+    }catch (error){
+      console.log(error);
+    }
+    
+}
 /* Async function to get array of json as events*/
 async function getallReservations() {
   

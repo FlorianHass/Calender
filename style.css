@@ -1,13 +1,132 @@
 
-ul.calender-weekdays{
 
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333333;
-
+#setview{
+  flex: 1;
+  text-align: center;
+  margin-top: -580px;
+  margin-left: 675px;
+  position: absolute;
 }
+
+  #viewmonth,#viewweek, #viewday{
+    border: none;
+    background-color: rgb(179, 158, 158);
+    border-radius: 5px;
+    color: white;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: medium;
+  }
+
+  #viewmonth:hover, #viewweek:hover, #viewday:hover{
+    background-color: #160a0a;
+  }
+
+#tablecontainer{
+    position: absolute;
+    display: block;
+    top: 22%;
+    left: 22.5%;
+    margin: -100px 0 0 0;
+    align-self: center;
+}
+#calendartablemonth {
+  border-collapse: collapse;
+  text-align: center;
+  padding: 20px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-left: -25px;
+}
+
+#calendartablemonth th {
+  border: 2px solid black;
+  border-radius: 100%;
+  padding: 10px;
+  text-align: center;
+  border-style: solid; 
+  width: 100px;
+  height: 10px;
+  font-weight: bold;
+}
+
+#calendartablemonth td {
+  border: 2px solid black;
+  padding: 10px;
+  text-align: center;
+  width: 100px;
+  height: 40px;
+}
+
+#calendartableweek {
+  border-collapse: collapse;
+  text-align: center;
+  padding: 20px;
+  margin-left: -160px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+#calendartableweek th{
+  border: 2px solid black;
+  padding: 10px;
+  text-align: center;
+  width: 135px;
+  height: 20px;
+  font-weight: bold;
+}
+
+#calendartableweek td {
+  border: 2px solid black;
+  padding: 10px;
+  text-align: center;
+  width: 135px;
+  height: 440px;
+}
+
+#calendartableday {
+  border-collapse: collapse;
+  width: 100%;
+  margin-left: 200px;
+  text-align: center;
+  padding: 20px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+#calendartableday th {
+  border: 2px solid black;
+  padding: 10px;
+  text-align: center;
+  width: 135px;
+  height: 20px;
+  font-weight: bold;
+}
+
+#calendartableday td {
+  border: 2px solid black;
+  padding: 10px;
+  text-align: center;
+  width: 135px;
+  height: 440px;
+}
+
+#changeone{
+  text-align: center;
+  margin-top: 36%;
+}
+
+#buttongoback, #buttongoforth{
+  border-style: none;
+  background-color: rgb(183, 163, 163);
+  border-radius: 50%;
+  color: white;
+  font-weight: bolder;
+  width: 30px;
+  height: 30px;
+}
+
+#buttongoback:hover, #buttongoforth:hover{
+  background-color: #160a0a;
+}
+
 
 #reservationsystem{
     display: none;
@@ -47,32 +166,36 @@ ul.calender-weekdays{
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 5px;
-  margin: 5px 0;
+  padding: 4px;
+  margin: 3px 0;
 }
 
 .event-div-month {
   border: 1px solid black;
-  padding: 5px;
+  padding: 4px;
   margin: 2px;
+  width: 80px;
+  height: 5px;
   cursor: pointer;
-  background-color: #f0f0f0;
+  background-image: none;
+  font-size: 7px;
 }
 
 .event-div-week {
   border: 1px solid black;
   padding: 5px;
   margin: 2px;
+  margin-left: -4px;
+  width: 120px;
   cursor: pointer;
-  background-color: #f0f0f0;
 }
 
 .event-div-day {
   border: 1px solid black;
   padding: 5px;
   margin: 2px;
+  width: 120px;
   cursor: pointer;
-  background-color: #f0f0f0;
 }
 
 .event-div-month:hover {
@@ -85,4 +208,52 @@ ul.calender-weekdays{
 
 .event-div-day:hover {
   background-color: #d0d0d0;
+}
+
+#selectdatediv{
+  position: absolute;
+  margin-top: -28px;
+  margin-left: 920px;
+}
+
+  #MonthDateSelect{
+    border: 2px solid rgb(179, 158, 158);
+    background-color: rgb(179, 158, 158);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+  }
+
+  #YearDateSelect{
+    border: 2px solid rgb(179, 158, 158);
+    background-color: rgb(179, 158, 158);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+  }
+
+  #DayDateSelect{
+    border: 2px solid rgb(179, 158, 158);
+    background-color: rgb(179, 158, 158);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+  }
+
+  #DateSelectButton{
+    border: 2px solid rgb(179, 158, 158);
+    background-color: rgb(179, 158, 158);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+  }
+
+/* Media query for smaller screens, yet to be changed */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 14px; /* Smaller font size for smaller screens */
+  }
+
+  #calendartablemonth,
+  #calendartableweek,
+  #calendartableday {
+    flex: 0 0 100%; /* Take up full width on smaller screens */
+  }
+
 }

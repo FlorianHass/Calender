@@ -18,23 +18,26 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
 </head>
-<body>
+<body class="body">
   <div class="container">
-    <h1>Calendar</h1>
-
-    <div id="calendartable"></div>
+    <h1 id="title">Calendar</h1>
+    
+  <div id="tablecontainer">
+    <div id="calendartablemonth"></div>
+    <div id="calendartableweek"></div>
+    <div id="calendartableday"></div>
     <!--Calender will be here-->
-
+  </div>
     <div id="calendarreservation"></div>
     <!--Reservations for Calender will occur here-->
 
     <div id="changeone">
 
-      <button onclick="gobackinview()"><</button>
-      <button onclick="goforthinview()">></button>
+      <button onclick="gobackinview()" id="buttongoback"><</button>
+      <button onclick="goforthinview()" id="buttongoforth">></button>
     </div>
 
-    <div>
+    <div id="selectdatediv">
       <!-- Month for form-->
       <form id="dateForm">
 
@@ -52,12 +55,12 @@
           <option> <!--Function to choose current day and go forth and back--></option>
         </select> 
 
-        <button type='submit'>Submit</button>
+        <button type='submit' id="DateSelectButton">Update</button>
       </form>
 
     </div>
 
-    <div>
+    <div id="setview">
       <!-- Select view for table-->
       <button id="viewmonth" onclick="setmonthview()" >Month</button>
       <button id="viewweek" onclick="setweekview()">Week</button>
@@ -114,6 +117,7 @@
     <p id="openreservation-description"></p>
     <input type="file" id="ReservationImageNew" accept="image/*" onchange="validateImage()">
     <button onclick="AddImageToEvent()">Enter image</button>
+    <button onclick="DeleteImageFromEvent()">Delete current image</button>
     <button onclick="closereservationdiv()">X</button>
     <button onclick="deletereservation()">Delete event</button>
   </div>
