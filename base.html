@@ -4,13 +4,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calendar</title>
 
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script  src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
   <script defer src="script.js"></script> 
   <!--Asynchronous generate for 'old' browsers-->
   <script async src="script.js"></script>
   <!--Asynchronous generate for 'modern' browsers-->
 
   <script defer src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
   <script async src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
   <link rel="stylesheet" type="text/css" href="style.css">
@@ -83,23 +85,23 @@
       <div id="timespan">
         <label for="ReservationBegin" id="ReservationBeginLabel">Begin:</label>
         <input type="time" id="ReservationBegin" name="eventBegin"onchange="checktimespan()">
-
+        <p id="placeholder">--</p>
         <label for="ReservationEnd" id="ReservationEndLabel">End:</label>
         <input type="time" id="ReservationEnd" name="eventEnd" onchange="checktimespan()"><p id="timespanincorrect"></p><br><br>
       </div>
 
-      <label for="ReservationTitle">Title:</label>
+      <label for="ReservationTitle" id="ReservationTitleLabel">Title:</label>
       <input type="text" id="ReservationTitle" name="title" placeholder="Title" maxlength="50" required><br><br>
 
-      <label for="ReservationDescription">Description:</label>
+      <label for="ReservationDescription" id="ReservationDescriptionLabel">Description:</label>
       <input type="text" id="ReservationDescription" name="description" placeholder="Description" maxlength="2000" required><br><br>
 
-      <label for="ReservationLocation">Location:</label>
+      <label for="ReservationLocation" id="ReservationLocationLabel">Location:</label>
       <input type="text" id="ReservationLocation" name="location" placeholder="DHBW" maxlength="50" required><br><br>
 
-      <button onclick="cancelreservation()">Cancel</button>
+      <button onclick="cancelreservation()" id="ReservationCancel">X</button>
       <div id="reservationsubmit">
-        <input type="submit" value="Submit" onsubmit="submitreservation()">
+        <input type="submit" value="Submit" onsubmit="submitreservation()" id="ReservationSubmitButton">
       </div>
   </form>
   </div>

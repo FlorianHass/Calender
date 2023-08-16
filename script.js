@@ -1042,3 +1042,7 @@ function closemap() {
   }
 }
 
+/**/
+$(function() {
+  $("#reservationsystem").draggable();
+});
