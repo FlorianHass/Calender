@@ -69,22 +69,22 @@
 
   </div>
   <div id="reservationmaking">
-    <button id="reservationopen" onclick="openreservation()" >Reservation</button>
+    <button id="reservationopen" onclick="openreservation()" >+</button>
   </div>
 
   <div id="reservationsystem">
     <form id="reservationform">
-      <label for="ReservationDate">Event Date:</label>
+      <label for="ReservationDate" id="ReservationDateLabel">Event Date:</label>
       <input type="date" id="ReservationDate" name="eventDate" required><br><br>
 
-      <label for="ReservationAllday">Allday:</label>
+      <label for="ReservationAllday" id="ReservationAlldayLabel">Allday:</label>
       <input type="checkbox" name="allday" id="ReservationAllday" onchange="regulatetimespan()">
 
       <div id="timespan">
-        <label for="ReservationBegin">Begin:</label>
+        <label for="ReservationBegin" id="ReservationBeginLabel">Begin:</label>
         <input type="time" id="ReservationBegin" name="eventBegin"onchange="checktimespan()">
 
-        <label for="ReservationEnd">End:</label>
+        <label for="ReservationEnd" id="ReservationEndLabel">End:</label>
         <input type="time" id="ReservationEnd" name="eventEnd" onchange="checktimespan()"><p id="timespanincorrect"></p><br><br>
       </div>
 

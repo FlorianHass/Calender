@@ -286,6 +286,7 @@ async function createCalendarMonth(year, month) {
               /* fulldate variable simply is like the start/end attribute so YYYY-MM-DD */
               currentDate++;
               let count = 0;
+              const eventContainer = document.createElement("div");
               reservations.every(event => {
                 if (count === 6) {
                     return false; /* Limit amount of shown events per day to 6 */
@@ -293,7 +294,6 @@ async function createCalendarMonth(year, month) {
                 else if (event.start.slice(0,event.start.indexOf('T')) === fulldate) {
 
                   /* Seems dumb to create an eventContainer for each EventItem, however is necessary to list below each other */
-                  const eventContainer = document.createElement("div");
                   eventContainer.className = "reservation-container-month";
                   const eventItem = document.createElement("div");
                   eventItem.className = "event-div-month";
@@ -304,18 +304,19 @@ async function createCalendarMonth(year, month) {
                     eventItem.style.backgroundSize = "cover"; // Resize the background image to cover the entire div
                     eventItem.style.backgroundPosition = "center"; // Center the background image within the div
                     eventItem.style.backgroundRepeat = "no-repeat"; // Prevent the background image from repeating
+                    eventItem.style.fontWeight = "bold";
                   }
-                  eventItem.textContent = event.title;
+                  eventItem.textContent = event.start.slice(event.start.indexOf('T')+1)+"-"+event.end.slice(event.end.indexOf('T')+1);
                   eventItem.addEventListener("click", () => open_current_reservation(event.id));
 
                   /* Append eventContainer to tableCell */
                   eventContainer.appendChild(eventItem);
-                  tableCell.appendChild(eventContainer);
                   count++;
                   return true
                 }
                 return true;
               });
+              tableCell.appendChild(eventContainer);
           }
           tableRow.appendChild(tableCell);
       }
@@ -361,6 +362,7 @@ async function createCalendarWeek(year, month, day) {
     if (col === 0) {
       tableCell.style.color = "#9c1a1a";
     }
+    const eventContainer = document.createElement("div");
     reservations.every(event => {
       if (count === 6) {
           return false; /* Limit amount of shown events per day to 6 */
@@ -368,12 +370,11 @@ async function createCalendarWeek(year, month, day) {
       else if (event.start.slice(0,event.start.indexOf('T')) === new Date(firstdateofweek.valueOf(firstdateofweek) + col * Lengthofday).toISOString().split('T')[0] ) {
 
         /* Seems dumb to create an eventContainer for each EventItem, however is necessary to list below each other */
-        const eventContainer = document.createElement("div");
         eventContainer.className = "reservation-container-week";
 
         const eventItem = document.createElement("div");
         eventItem.className = "event-div-week";
-        eventItem.textContent = event.title;
+        eventItem.textContent = event.start.slice(event.start.indexOf('T')+1)+"-"+event.end.slice(event.end.indexOf('T')+1);
         if (event.imageurl !== null) {
           const image = event.imageurl
           eventItem.style.backgroundColor = "#f3f3f3";
@@ -381,18 +382,18 @@ async function createCalendarWeek(year, month, day) {
           eventItem.style.backgroundSize = "cover"; // Resize the background image to cover the entire div
           eventItem.style.backgroundPosition = "center"; // Center the background image within the div
           eventItem.style.backgroundRepeat = "no-repeat"; // Prevent the background image from repeating
+          eventItem.style.fontWeight = "bold";
         }
         eventItem.addEventListener("click", () => open_current_reservation(event.id));
 
         /* Append eventContainer to tableCell */
         eventContainer.appendChild(eventItem);
-        tableCell.appendChild(eventContainer);
         count++;
         return true
       }
       return true;
     });
-
+    tableCell.appendChild(eventContainer);
     tableRow.appendChild(tableCell);
   }
 
@@ -422,6 +423,7 @@ async function createCalendarDay(year,month,day) {
     tableCell.textContent = currentdate.getDate();
 
     let count = 0;
+    const eventContainer = document.createElement("div");
               reservations.every(event => {
                 if (count === 6) {
                     return false; /* Limit amount of shown events per day to 6 */
@@ -429,12 +431,11 @@ async function createCalendarDay(year,month,day) {
                 else if (event.start.slice(0,event.start.indexOf('T')) === currentdate.toISOString().split('T')[0]) {
 
                   /* Seems dumb to create an eventContainer for each EventItem, however is necessary to list below each other */
-                  const eventContainer = document.createElement("div");
                   eventContainer.className = "reservation-container-day";
 
                   const eventItem = document.createElement("div");
                   eventItem.className = "event-div-day";
-                  eventItem.textContent = event.title;
+                  eventItem.textContent = event.start.slice(event.start.indexOf('T')+1)+"-"+event.end.slice(event.end.indexOf('T')+1);
                   if (event.imageurl !== null) {
                     const image = event.imageurl
                     eventItem.style.backgroundColor = "#f3f3f3";
@@ -442,18 +443,18 @@ async function createCalendarDay(year,month,day) {
                     eventItem.style.backgroundSize = "cover"; // Resize the background image to cover the entire div
                     eventItem.style.backgroundPosition = "center"; // Center the background image within the div
                     eventItem.style.backgroundRepeat = "no-repeat"; // Prevent the background image from repeating
+                    eventItem.style.fontWeight = "bold";
                   }
                   eventItem.addEventListener("click", () => open_current_reservation(event.id));
 
                   /* Append eventContainer to tableCell */
                   eventContainer.appendChild(eventItem);
-                  tableCell.appendChild(eventContainer);
                   count++;
                   return true
                 }
                 return true;
               });
-
+              tableCell.appendChild(eventContainer);
     tableRow.appendChild(tableCell);
 
   table.appendChild(tableRow);
