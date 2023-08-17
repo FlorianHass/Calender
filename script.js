@@ -787,6 +787,7 @@ function hidesubmit(){
         body: JSON.stringify(parameter)
       });
       console.log(request);
+      loadview();
       if (request.status !== 200) {
         throw new Error(request.status);
       }
@@ -949,7 +950,7 @@ async function open_current_reservation(id){
   document.getElementById("openreservation-day").innerHTML = data.start.split('T')[0] + "  " + data.start.substring(data.start.indexOf('T') + 1) + "--" + data.end.substring(data.end.indexOf('T') + 1);
   document.getElementById("openreservation-title").innerHTML = data.title;
   document.getElementById("openreservation-location").innerHTML = data.location;
-  document.getElementById("openreservation-description").innerHTML = data.extra;
+  document.getElementById("openreservation-description").innerHTML = insertLineBreaks(data.extra,40);
 
   document.getElementById("openreservation").style.display = "block";
   sessionStorage.setItem("current_event_id",id);
@@ -1046,3 +1047,13 @@ function closemap() {
 $(function() {
   $("#reservationsystem").draggable();
 });
+
+$(function() {
+  $("#openreservation").draggable();
+});
+
+/* Insert Line break for Description */
+function insertLineBreaks(str, maxLength) {
+  const regex = new RegExp(`.{1,${maxLength}}`, 'g');
+  return str.match(regex).join('\n');
+}

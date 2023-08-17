@@ -91,7 +91,7 @@
       </div>
 
       <label for="ReservationTitle" id="ReservationTitleLabel">Title:</label>
-      <input type="text" id="ReservationTitle" name="title" placeholder="Title" maxlength="50" required><br><br>
+      <input type="text" id="ReservationTitle" name="title" placeholder="Title" maxlength="20" required><br><br>
 
       <label for="ReservationDescription" id="ReservationDescriptionLabel">Description:</label>
       <input type="text" id="ReservationDescription" name="description" placeholder="Description" maxlength="2000" required><br><br>
@@ -111,12 +111,20 @@
   </div>
 
   <div id="openreservation">
-    <p id="openreservation-day"></p>
-    <p id="openreservation-title"></p>
-    <p id="openreservation-location"></p>
+    <div id="openreservation-day-div">
+      <p id="openreservation-day"></p>
+    </div>
+    <div id="openreservation-title-div">
+      <p id="openreservation-title"></p>
+    </div>
+    <div id="openreservation-location-div">
+      <p id="openreservation-location"></p>
+    </div>
     <button onclick="openmap()">~</button>
     <button onclick="closemap()">*</button>
-    <p id="openreservation-description"></p>
+    <div id="openreservation-description-div">
+      <p id="openreservation-description"></p>
+    </div>
     <input type="file" id="ReservationImageNew" accept="image/*" onchange="validateImage()">
     <button onclick="AddImageToEvent()">Enter image</button>
     <button onclick="DeleteImageFromEvent()">Delete current image</button>
