@@ -8,7 +8,7 @@ const selectday = document.getElementById('DayDateSelect');
 const Lengthofday = 8.64e+7;
 
 console.log(localStorage.getItem("registration"));
-/*Get User E-mail*/
+/*Get Username and use as login*/
 if (localStorage.getItem("registration") === null) {
   registerUser();
 }
@@ -45,9 +45,13 @@ function registerUser() {
   }
 }
 
+/* Create Months for optional Months selectable */
 function selectOptionCreateMonth(selectElement, stringArray, datearray) {
   // Clear existing options, if any
-  selectElement.innerHTML = '';
+  $(selectElement)
+    .find('option')
+    .remove()
+    .end();
 
   // Loop through the string array using the index and create options
   for (let index = 0; index < stringArray.length; index++) {
@@ -83,12 +87,16 @@ window.onload = function () {
   if (sessionStorage.getItem("hasCodeRunBefore") === null) {
       reloadDaysFromMonth(monthsvalue[new Date().getMonth()]);
       sessionStorage.setItem("hasCodeRunBefore", true);
+      handleSubmit(event);
   }
   else{
     reloadDaysFromMonth(sessionStorage.getItem('selectedmonth'));
+    selectday.value = "01";
   }
+  closereservationdiv();
 }
 
+/* Reload selectable days from the selected month */
 function reloadDaysFromMonth(selectedMonth) {
   const daySelectElement = document.getElementById('DayDateSelect');
   
@@ -109,6 +117,7 @@ function reloadDaysFromMonth(selectedMonth) {
   }
 }
 
+/* Choose years +-50 from now */
 function selectOptionCreateYear() {
   const selectElement = document.getElementById('YearDateSelect');
   const currentYear = new Date().getFullYear();
@@ -184,6 +193,8 @@ function handleSubmit(event) {
 const dateForm = document.getElementById('dateForm');
 dateForm.addEventListener('submit', handleSubmit);
 
+
+/* Load view from session Storage selected view */
 async function loadview(){
   const calendarDivMonth = document.getElementById('calendartablemonth');
   const calendarDivWeek = document.getElementById('calendartableweek');
@@ -222,11 +233,12 @@ async function loadview(){
   }
 }
 
+/* Simply create Date() to get all days of a month/year */
 function getDaysInMonth(year, month) {
-  // Return the number of days in a given month (month is 0-indexed)
   return new Date(year, month, 0).getDate();
 }
 
+/* Creates the calender view Month and loads in events as well */
 async function createCalendarMonth(year, month) {
   // Create a new Date object with the given year and month (month is 0-indexed)
   const firstDayOfMonth = new Date(year+"-"+month+"-"+"01");
@@ -264,7 +276,7 @@ async function createCalendarMonth(year, month) {
 
       for (let col = 0; col < 7; col++) {
           const tableCell = document.createElement('td');
-
+          tableCell.id = "td-month";
           if (row === 0 && col < firstDayOfWeek) {
               // Empty cell before the first day of the month
               tableCell.textContent = '';
@@ -274,6 +286,7 @@ async function createCalendarMonth(year, month) {
           } else {
               // Display the current date
               tableCell.textContent = currentDate;
+              tableCell.style.height = "62px";
               if (col === 0) {
                 tableCell.style.color = "#9c1a1a";
               }
@@ -327,6 +340,7 @@ async function createCalendarMonth(year, month) {
   return table;
 }
 
+/* Creates the calender view Week and loads in events as well */
 async function createCalendarWeek(year, month, day) {
   // Create the calendar table
   const table = document.createElement('calendartable');
@@ -401,6 +415,8 @@ async function createCalendarWeek(year, month, day) {
   return table;
 }
 
+
+/* Creates the calender view Day and loads in events as well */
 async function createCalendarDay(year,month,day) {
   // Create the calendar table
   const table = document.createElement('calendartable');
@@ -480,6 +496,7 @@ function setdayview(){
 
 loadview();
 
+/* Goes forth one instance based on current view */
 function goforthinview(){
   switch (sessionStorage.getItem("view")) {
     case "month":
@@ -534,6 +551,7 @@ function goforthinview(){
   loadview();
 }
 
+/* Goes back one instance based on current view */
 function gobackinview(){
   switch (sessionStorage.getItem("view")) {
     case "month":
@@ -622,10 +640,12 @@ document.addEventListener('DOMContentLoaded', function () {
   eventDateInput.setAttribute('max', getMaxDate());
 });
 
+/* Reveal Openreservation div */
 function openreservation(){
   document.getElementById("reservationsystem").style.display = 'block';
 }
 
+/* Cancel reservation by deactivating div */
 function cancelreservation(){
   document.getElementById("ReservationDate").value = "";
   document.getElementById("ReservationDescription").value = "";
@@ -634,6 +654,7 @@ function cancelreservation(){
   document.getElementById("ReservationTitle").value = "";
 }
 
+/* Check time factors */
 function checktimespan(){
   const startTimeInput = document.getElementById('ReservationBegin');
   const endTimeInput = document.getElementById('ReservationEnd');
@@ -665,16 +686,29 @@ function checktimespan(){
 
 /* Validate Image Input for Reservation */
 function validateImage() {
-    var fileInput = document.getElementById('ReservationImageNew');
-  
-    var file = fileInput.files[0];
-    if (file) {
+  var fileInput = document.getElementById('ReservationImageNew');
+
+  var file = fileInput.files[0];
+  if (file) {
       if (file.type.startsWith('image/')) {
+          document.getElementById("AddImagetoEventButton").style.display = "block";
+          var reader = new FileReader();
+          reader.onload = function(event) {
+              var imageUrl = event.target.result;
+              document.getElementById("ReservationImageShow").style.backgroundColor = "#f3f3f3";
+              document.getElementById("ReservationImageShow").style.backgroundImage = `url(${imageUrl})`;
+              document.getElementById("ReservationImageShow").style.backgroundSize = "cover";
+              document.getElementById("ReservationImageShow").style.backgroundPosition = "center";
+              document.getElementById("ReservationImageShow").style.backgroundRepeat = "no-repeat";
+          };
+          reader.readAsDataURL(file);
+
       } else {
-        hidesubmit();
+          hidesubmit();
       }
-    }
   }
+}
+
 
 /* Show reservation submit div */
 function showsubmit(){
@@ -682,8 +716,7 @@ function showsubmit(){
   document.getElementById("timespanincorrect").innerHTML = "";
 }
 
-/* Hide reservation submit div */
-
+/* Get parameters for fetch body */
 async function getparameterforcreate(){
 
   if (document.getElementById("ReservationAllday").checked) {
@@ -762,12 +795,13 @@ function convertimage(number) {
 }
 
 
-
+/* Hide submit when parameter are wrong */
 function hidesubmit(){
   document.getElementById("reservationsubmit").style.display = "none";
   document.getElementById("timespanincorrect").innerHTML = "Your timespan is incorrect";
 }
 
+/* Fetch command to shoot reservation */
   async function submitreservation(event){
     /*Check how many reservations date has*/
     /* id und username und datum, id nur für jeden Tag also für jeden tag mehrere ID*/ 
@@ -799,6 +833,7 @@ function hidesubmit(){
 // Event listener to handle form submission
 document.getElementById("reservationform").addEventListener('submit', submitreservation);
 
+
 async function AddImageToEvent(){
 
   const image = await AddImageToEventHelper();
@@ -816,6 +851,7 @@ async function AddImageToEvent(){
       });
       console.log(request);
       loadview();
+      document.getElementById("AddImagetoEventButton").style.display = "none";
       if (request.status !== 200) {
         throw new Error(request.status);
       }
@@ -848,6 +884,7 @@ async function DeleteImageFromEvent(){
         },
       });
       console.log(request);
+      document.getElementById("ReservationImageShow").style.backgroundImage = "none";
       loadview();
       if (request.status !== 200) {
         throw new Error(request.status);
@@ -952,6 +989,15 @@ async function open_current_reservation(id){
   document.getElementById("openreservation-location").innerHTML = data.location;
   document.getElementById("openreservation-description").innerHTML = insertLineBreaks(data.extra,40);
 
+  if (data.imageurl !== null) {
+    const image = data.imageurl
+    document.getElementById("ReservationImageShow").style.backgroundColor = "#f3f3f3";
+    document.getElementById("ReservationImageShow").style.backgroundImage = "url("+image+")";
+    document.getElementById("ReservationImageShow").style.backgroundSize = "cover"; // Resize the background image to cover the entire div
+    document.getElementById("ReservationImageShow").style.backgroundPosition = "center"; // Center the background image within the div
+    document.getElementById("ReservationImageShow").style.backgroundRepeat = "no-repeat"; // Prevent the background image from repeating
+  }
+
   document.getElementById("openreservation").style.display = "block";
   sessionStorage.setItem("current_event_id",id);
 }
@@ -991,6 +1037,7 @@ function closereservationdiv(){
   document.getElementById("openreservation-location").innerHTML = "";
   document.getElementById("openreservation-description").innerHTML = "";
   closemap();
+  document.getElementById("AddImagetoEventButton").style.display = "none";
 }
 
 let map = null; // Initialize the map variable
@@ -1043,11 +1090,12 @@ function closemap() {
   }
 }
 
-/**/
+/*Jquery function to make the div for reservation draggable*/
 $(function() {
   $("#reservationsystem").draggable();
 });
 
+/* "" for opening existing reservation */
 $(function() {
   $("#openreservation").draggable();
 });

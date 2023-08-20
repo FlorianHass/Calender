@@ -22,7 +22,7 @@
 </head>
 <body class="body">
   <div class="container">
-    <h1 id="title">Calendar</h1>
+    <h1 id="title">Calendar Hass</h1>
     
   <div id="tablecontainer">
     <div id="calendartablemonth"></div>
@@ -74,6 +74,7 @@
     <button id="reservationopen" onclick="openreservation()" >+</button>
   </div>
 
+  <!--The Reservationsystem div-->
   <div id="reservationsystem">
     <form id="reservationform">
       <label for="ReservationDate" id="ReservationDateLabel">Event Date:</label>
@@ -97,7 +98,7 @@
       <input type="text" id="ReservationDescription" name="description" placeholder="Description" maxlength="2000" required><br><br>
 
       <label for="ReservationLocation" id="ReservationLocationLabel">Location:</label>
-      <input type="text" id="ReservationLocation" name="location" placeholder="DHBW" maxlength="50" required><br><br>
+      <input type="text" id="ReservationLocation" name="location" placeholder="DHBW" maxlength="30" required><br><br>
 
       <button onclick="cancelreservation()" id="ReservationCancel">X</button>
       <div id="reservationsubmit">
@@ -110,6 +111,7 @@
     <button id="deleteallevents" onclick="deleteAllReservations()">Delete all Reservations</button>
   </div>
 
+  <!-- Open reservation div entire-->
   <div id="openreservation">
     <div id="openreservation-day-div">
       <p id="openreservation-day"></p>
@@ -120,16 +122,19 @@
     <div id="openreservation-location-div">
       <p id="openreservation-location"></p>
     </div>
-    <button onclick="openmap()">~</button>
-    <button onclick="closemap()">*</button>
+    <button onclick="openmap()" id="openmapbutton">+</button>
+    <button onclick="closemap()" id="closemapbutton">-</button>
     <div id="openreservation-description-div">
       <p id="openreservation-description"></p>
     </div>
     <input type="file" id="ReservationImageNew" accept="image/*" onchange="validateImage()">
-    <button onclick="AddImageToEvent()">Enter image</button>
-    <button onclick="DeleteImageFromEvent()">Delete current image</button>
-    <button onclick="closereservationdiv()">X</button>
-    <button onclick="deletereservation()">Delete event</button>
+    <input type="button" value="Browse Images" onclick="document.getElementById('ReservationImageNew').click();" id="ReservationImageNewButton" />
+    <div id="ReservationImageShow"></div>
+    <button onclick="AddImageToEvent()" id="AddImagetoEventButton">Enter image</button>
+    <button onclick="DeleteImageFromEvent()" id="DeleteImagefromEventButton">Delete current image</button>
+    <button onclick="closereservationdiv()" id="ClosereservationButton">X</button>
+    <button onclick="deletereservation()" id="DeletereservationButton">Delete event</button>
+    <div id="ShowImage"></div>
   </div>
 
   <!--Map for location search-->

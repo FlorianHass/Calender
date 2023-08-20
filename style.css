@@ -1,9 +1,16 @@
+#title{
+  text-align: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 
+body.body{
+  background-color: rgb(249, 225, 189);
+}
 
 #setview{
   flex: 1;
   text-align: center;
-  margin-top: -580px;
+  margin-top: -630px;
   margin-left: 675px;
   position: absolute;
 }
@@ -49,13 +56,11 @@
   font-weight: bold;
 }
 
-#calendartablemonth td {
+#td-month{
   border: 2px solid black;
   padding: 10px;
   text-align: center;
   width: 100px;
-  height: 40px;
-  max-height: 40px;
 }
 
 #calendartableweek {
@@ -111,7 +116,7 @@
 
 #changeone{
   text-align: center;
-  margin-top: 36%;
+  margin-top: 600px;
 }
 
 #buttongoback, #buttongoforth{
@@ -131,13 +136,14 @@
 #openreservation{
   position: absolute;
   margin-top: -450px;
+  margin-left: 400px;
   border: #160a0a;
-  border: 7px double salmon;
+  border: 7px double rgb(128, 99, 95);
   border-radius: 10%;
   width: 450px;
   height: 400px;
   display: none;
-  z-index: 1;
+  z-index: 4;
   background-color: rgb(238, 238, 230);
 }
 
@@ -147,7 +153,7 @@
   border-radius: 10%;
   background-color: white;
   width: 100px;
-  height: 55px;
+  height: 50px;
   margin-left: 290px;
   margin-top: 10px;
 }
@@ -178,11 +184,45 @@
 
 #openreservation-location-div{
   position: absolute;
+  border: 3px solid beige;
+  background-color: white;
+  width: 300px;
+  height: 25px;
+  margin-left: 20px;
+  margin-top: 230px;
 }
 
 #openreservation-location{
   position: absolute;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-top: 0px;
+  margin-left: 3px;
 }
+
+#openmapbutton{
+  position: absolute;
+  margin-top: 234px;
+  margin-left: 335px;
+  background-image: url();
+  background-color: white;
+}
+
+#closemapbutton{
+  position: absolute;
+  margin-top: 234px;
+  margin-left: 360px;
+  background-image: url();
+  background-color: white;
+}
+
+#map{
+  display: none;
+  position: absolute;
+  z-index: 1;
+  margin-top: -500px;
+  margin-left: 800px;
+}
+
 
 #openreservation-description-div{
   border: 3px solid beige;
@@ -190,7 +230,7 @@
   width: 400px;
   height: 150px;
   margin-left: 20px;
-  margin-top: 50px;
+  margin-top: 70px;
   background-color: white;
 }
 
@@ -202,18 +242,101 @@
   font-size: small;
 }
 
-#map{
+#ReservationImageNew{
+  position: absolute;
+  margin-top: 50px;
+  margin-left: 60px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   display: none;
+}
+
+#ReservationImageNewButton{
+  position: absolute;
+  margin-top: 50px;
+  margin-left: 120px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: white;
+  border: 2px solid beige;
+}
+
+#ReservationImageNewButton:hover{
+  border: solid black;
+  background-color: grey;
+}
+
+#AddImagetoEventButton{
+  position: absolute;
+  margin-top: 50px;
+  margin-left: 21px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: white;
+  border: 2px solid beige;
+  display: none;
+}
+
+#AddImagetoEventButton:hover{
+  border: solid black;
+  background-color: grey;
+}
+
+#ReservationImageShow{
+  position: absolute;
+  background-image: none;
+  width: 150px;
+  height: 90px;
+  margin-top: 50px;
+  margin-left: 280px;
+}
+
+#DeleteImagefromEventButton{
+  position: absolute;
+  margin-top: 80px;
+  margin-left: 21px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: white;
+  border: 2px solid beige;
+}
+
+#DeleteImagefromEventButton:hover{
+  border: solid black;
+  background-color: grey;
+}
+
+#ClosereservationButton{
+  position: absolute;
+  margin-top: 145px;
+  margin-left: 20px;
+  background-color: white;
+  border: 2px solid beige;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 500;
+}
+
+#ClosereservationButton:hover{
+  background-color: #160a0a;
+}
+
+#DeletereservationButton{
+  position: absolute;
+  margin-top: 145px;
+  margin-left: 330px;
+  background-color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  border: 2px solid beige;
+}
+
+#DeletereservationButton:hover{
+  background-color: #160a0a;
 }
 
 /* Styling for reservation divs */
 .reservation-container-month {
-  display: block; 
+  flex: 1;
   justify-content: space-between;
   align-items: flex-start;
   padding: 5px;
   margin: 5px 0;
-  max-height: 85%;
+  max-height: 10px;
   overflow: auto;
 }
 
@@ -474,7 +597,16 @@
   border-radius: 50px;
 }
 
-/* Media query for smaller screens, yet to be changed */
+#deleteallevents{
+  position: absolute;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-top: 40px;
+  margin-left: 213px;
+  background-color: antiquewhite;
+  border: 2px solid rgb(192, 59, 59);
+}
+
+/* Media query for smaller screens, Not changed sadly not enough time*/
 @media screen and (max-width: 768px) {
   body {
     font-size: 14px; /* Smaller font size for smaller screens */
